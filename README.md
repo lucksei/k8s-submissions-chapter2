@@ -40,3 +40,31 @@ Create the `todo-app` deployment
 ```sh
 kubectl create deployment todo-app --image=lucksei/todo-app:latest
 ```
+
+## 1.3. Declarative approach
+
+> Execute commands from the root of the project.
+
+Create the `random-string-generator` deployment manifest
+
+```sh
+kubectl create deployment random-string-generator --image=lucksei/random-string-generator:latest --dry-run=client -o yaml > ./random-string-generator/manifests/deployment.yaml
+```
+
+Apply deployment manifest
+
+```sh
+kubectl apply -f ./random-string-generator/manifests/deployment.yaml
+```
+
+Check if deployment is worked
+
+```sh
+kubectl get deployments
+```
+
+Inspect logs
+
+```sh
+kubectl logs -f <random-string-generator-pod-name>
+```
