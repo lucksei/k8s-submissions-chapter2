@@ -2,7 +2,7 @@
 
 ## Exercises
 
-- [2.1. Getting Started](#2.1.-Getting-Started)
+- [2.1. Getting Started](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.1/random-string-generator)
 
 ## 2.1. Getting Started
 
