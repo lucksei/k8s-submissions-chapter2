@@ -2,9 +2,10 @@
 
 ## Exercises
 
-- [2.1. Getting Started](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.1/random-string-generator)
+- [1.1. Getting Started](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.1/random-string-generator)
+- [1.2. The project, step 1](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.2/todo-app)
 
-## 2.1. Getting Started
+## 1.1. Getting Started
 
 Create k3d cluster
 
@@ -24,4 +25,18 @@ Create the deployment
 
 ```sh
 kubectl create deployment random-string-generator --image=lucksei/random-string-generator:latest
+```
+
+## 1.2. The project, step 1
+
+Create the `todo-app` image
+
+```sh
+docker build -t lucksei/todo-app . && docker push lucksei/todo-app:latest
+```
+
+Create the `todo-app` deployment
+
+```sh
+kubectl create deployment todo-app --image=lucksei/todo-app:latest
 ```
