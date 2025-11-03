@@ -5,6 +5,7 @@
 - [1.1. Getting Started](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.1/random-string-generator)
 - [1.2. The project, step 1](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.2/todo-app)
 - [1.3. Declarative approach](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.3/random-string-generator)
+- [1.4. The project, step 2](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.4/todo-app)
 
 ## 1.1. Getting Started
 
@@ -49,6 +50,7 @@ kubectl create deployment todo-app --image=lucksei/todo-app:latest
 Create the `random-string-generator` deployment manifest
 
 ```sh
+mkdir -p ./random-string-generator/manifests
 kubectl create deployment random-string-generator --image=lucksei/random-string-generator:latest --dry-run=client -o yaml > ./random-string-generator/manifests/deployment.yaml
 ```
 
@@ -69,3 +71,20 @@ Inspect logs
 ```sh
 kubectl logs -f <random-string-generator-pod-name>
 ```
+
+## 1.4. The project, step 2
+
+Create the `todo-app` deployment manifest
+
+```sh
+mkdir -p ./todo-app/manifests
+kubectl create deployment todo-app --image=lucksei/todo-app:latest --dry-run=client -o yaml > ./todo-app/manifests/deployment.yaml
+```
+
+Apply deployment manifest
+
+```sh
+kubectl apply -f ./todo-app/manifests/deployment.yaml
+```
+
+You can check if deployment is worked like in exercise 1.3
