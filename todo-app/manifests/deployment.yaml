@@ -16,7 +16,10 @@ spec:
         app: todo-app
     spec:
       containers:
-      - image: lucksei/todo-app:latest
-        name: todo-app
-        resources: {}
+        - image: lucksei/todo-app:latest
+          name: todo-app
+          resources: {}
+          env:
+            - name: PORT
+              value: '3005'
 status: {}

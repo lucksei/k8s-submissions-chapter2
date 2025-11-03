@@ -6,6 +6,7 @@
 - [1.2. The project, step 1](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.2/todo-app)
 - [1.3. Declarative approach](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.3/random-string-generator)
 - [1.4. The project, step 2](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.4/todo-app)
+- [1.5. The project, step 3](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.5/todo-app)
 
 ## 1.1. Getting Started
 
@@ -88,3 +89,27 @@ kubectl apply -f ./todo-app/manifests/deployment.yaml
 ```
 
 You can check if deployment is worked like in exercise 1.3
+
+## 1.5. The project, step 3
+
+Push to registry new version of todo-app
+
+```sh
+docker build -t lucksei/todo-app:latest . && docker push lucksei/todo-app:latest
+```
+
+> From `todo-app` directory
+
+Apply changes in manifest
+
+> From root of the project
+
+```sh
+kubectl apply -f ./todo-app/manifests/deployment.yaml
+```
+
+Port forward the `todo-app` service to localhost:3005
+
+```sh
+kubectl port-forward pod/<todo-app-pod-name> 3005:3005
+```
