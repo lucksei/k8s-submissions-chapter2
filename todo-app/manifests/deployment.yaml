@@ -17,6 +17,7 @@ spec:
     spec:
       containers:
         - image: lucksei/todo-app:latest
+          imagePullPolicy: Always
           name: todo-app
           resources: {}
           env:

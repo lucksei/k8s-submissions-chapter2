@@ -113,3 +113,23 @@ Port forward the `todo-app` service to localhost:3005
 ```sh
 kubectl port-forward pod/<todo-app-pod-name> 3005:3005
 ```
+
+## 1.6. The project, step 4
+
+Recreate k3d cluster with ports 8081:80 and 8082:30080
+
+```sh
+k3d cluster delete
+k3d cluster create --port 8082:30080@agent:0 -p 8081:80@loadbalancer --agents 2
+```
+
+- `agent:0` is the first "agent" (worker node in k3d that is basically a docker container)
+- `loadbalancer` is the "loadbalancer" (traefik, nginx, or any other loadbalancer)
+
+Running service with `type: NodePort` exposing on port 30080
+
+```sh
+kubectl apply -f ./todo-app/manifests/service.yaml
+```
+
+Can now access the service on http://localhost:8082 since agent:0 has port 30080 mapped to 8082 and the service uses `type: NodePort` mapping to port 30080
