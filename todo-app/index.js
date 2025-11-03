@@ -4,8 +4,10 @@ const app = express()
 
 const PORT = process.env.PORT || 3000
 
+
 app.get('/', (req, res) => {
-  res.send(`Server started in port ${PORT}`);
+  // res.send(`Server started in port ${PORT}`);
+  res.sendFile(__dirname + '/index.html');
 })
 
 app.listen(PORT, () => {
