@@ -2,21 +2,33 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: random-string-generator
-  name: random-string-generator
+    app: log-output
+  name: log-output
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: random-string-generator
+      app: log-output
   strategy: {}
   template:
     metadata:
       labels:
-        app: random-string-generator
+        app: log-output
     spec:
+      volumes:
+        - name: shared-data
+          emptyDir: {}
       containers:
-        - image: lucksei/random-string-generator:latest
-          name: random-string-generator
+        - image: lucksei/log-output-container0:latest
+          name: log-output-container0
+          volumeMounts:
+            - name: shared-data
+              mountPath: /usr/src/app/data
+          resources: {}
+        - image: lucksei/log-output-container1:latest
+          name: log-output-container1
+          volumeMounts:
+            - name: shared-data
+              mountPath: /usr/src/app/data
           resources: {}
 status: {}
