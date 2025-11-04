@@ -7,6 +7,7 @@
 - [1.3. Declarative approach](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.3/random-string-generator)
 - [1.4. The project, step 2](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.4/todo-app)
 - [1.5. The project, step 3](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.5/todo-app)
+- [1.6. The project, step 4](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.6/todo-app)
 
 ## 1.1. Getting Started
 
@@ -133,3 +134,13 @@ kubectl apply -f ./todo-app/manifests/service.yaml
 ```
 
 Can now access the service on http://localhost:8082 since agent:0 has port 30080 mapped to 8082 and the service uses `type: NodePort` mapping to port 30080
+
+## 1.7. The project, step 5
+
+Created service and ingress manifests
+
+Can now access the service via the load balancer port configured previously in step 1.6 `-p 8081:80@loadbalancer`
+
+```sh
+http://localhost:8081/status
+```

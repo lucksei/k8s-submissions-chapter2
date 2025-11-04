@@ -16,7 +16,7 @@ spec:
         app: random-string-generator
     spec:
       containers:
-      - image: lucksei/random-string-generator:latest
-        name: random-string-generator
-        resources: {}
+        - image: lucksei/random-string-generator:latest
+          name: random-string-generator
+          resources: {}
 status: {}
