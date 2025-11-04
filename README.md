@@ -9,6 +9,8 @@
 - [1.5. The project, step 3](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.5/todo-app)
 - [1.6. The project, step 4](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.6/todo-app)
 - [1.7. External access with Ingress](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.7/random-string-generator)
+- [1.8. The project, step 5](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.8/todo-app)
+- [1.9. More services](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.9/pingpong)
 
 ## 1.1. Getting Started
 
@@ -145,3 +147,25 @@ Can now access the service via the load balancer port configured previously in s
 ```sh
 http://localhost:8081/status
 ```
+
+## 1.8. The project, step 5
+
+Deleted the ingress for the random-string-generator
+
+```sh
+kubectl delete ingress random-string-generator-ingress
+```
+
+Created ingress for the todo-app and modified service to `type: ClusterIP`. Can now access the service on http://localhost:8081 because of k3d cluster config from exercise 1.6 `-p 8081:80@loadbalancer`.
+
+## 1.9. More services
+
+Created new pingpong app and image in `docker.io` repository
+
+On the root of the **pingpong app** (`./pingpong`), not the project
+
+```sh
+docker build -t lucksei/pingpong . && docker push lucksei/pingpong:latest
+```
+
+Created the `pingpong` deployment and service manifest. Modified ingress (from step 1.8, inside `./todo-app/manifests/ingress.yaml`) with new path for `/pingpong` pointing to `pingpong-svc`. Can now access the pingpong app on http://localhost:8081/pingpong.
