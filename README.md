@@ -169,3 +169,19 @@ docker build -t lucksei/pingpong . && docker push lucksei/pingpong:latest
 ```
 
 Created the `pingpong` deployment and service manifest. Modified ingress (from step 1.8, inside `./todo-app/manifests/ingress.yaml`) with new path for `/pingpong` pointing to `pingpong-svc`. Can now access the pingpong app on http://localhost:8081/pingpong.
+
+## 1.10. Even more services
+
+Renamed the 'random-string-generator' app to 'log-output' to more closely match the material. Split it into two apps:
+
+- `log-output/container0/main.go`: Generates a random string on startup and writes a line with the random string and timestamp into a file.
+- `log-ouptut/container1/main.go`: Reads the file and provides the content in the HTTP GET endpoint for the user to see.
+
+Build and push both images to `docker.io` repository. From the `./log-output` directory execute the following commands
+
+```sh
+# Log output
+docker build -t lucksei/log-output-container0 . -f ./Dockerfile.container0 && docker push lucksei/log-output-container0:latest
+# HTTP GET
+docker build -t lucksei/log-output-container1 . -f ./Dockerfile.container1 && docker push lucksei/log-output-container1:latest
+```
