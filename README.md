@@ -12,6 +12,7 @@
 - [1.8. The project, step 5](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.8/todo-app)
 - [1.9. More services](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.9/pingpong)
 - [1.10. Even more services](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.10/log-output)
+- [1.11. Persisting data](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.11)
 
 ## 1.1. Getting Started
 
@@ -191,7 +192,7 @@ Modified `deployment.yaml` to use two images inside the pod. Changed `service.ya
 
 ## 1.11. Persisting data
 
-Created directory for the local Persistent Volume
+Created directory for the local Persistent Volume on the `k3d-k3s-default-agent-0` container
 
 ```sh
 docker exec -it k3d-k3s-default-agent-0 mkdir -p /tmp/kube
@@ -204,8 +205,14 @@ also made:
 - modified the `deployment.yaml` for the pingpong & log-output apps to use the PVC
 - moved the ingress from the `todo-app` to the `manifests/ingress.yaml` file to use it as the gateway for all my apps
 
-The pingpong app now saves the number of requests to the pingpong application into a file. Pushing image into repository
-
-```sh
-docker build -t lucksei/pingpong . && docker push lucksei/pingpong:latest
 ```
+Rules:
+  Host        Path  Backends
+  ----        ----  --------
+  *
+              /           todo-app-svc:3000 (10.42.0.26:3005)
+              /pingpong   pingpong-svc:3000 (10.42.0.32:3000)
+              /status     log-output-svc:2345 (10.42.0.36:3000)
+```
+
+The `pingpong` app now saves the number of requests to the GET /pingpoint endpoint into a file `pingpong.log`. The `log-output-container1` app now reads the file and provides the content in the HTTP GET /status endpoint for the user to see. Both images are built and pushed to `docker.io`.

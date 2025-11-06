@@ -1,15 +1,18 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 )
 
 const logFilePath = "./data/pod.log"
+const pingPongFilePath = "./data0/pingpong.log"
 
 // from stackoverflow
 // https://stackoverflow.com/questions/17863821/how-to-read-last-lines-from-a-big-file-with-go-every-10-secs
@@ -36,17 +39,56 @@ func readLastLogLine(file *os.File) string {
 	return line
 }
 
-func main() {
-	file, err := os.OpenFile(logFilePath, os.O_RDONLY, 0644)
-	if err != nil {
-		fmt.Printf("Error opening file: %v\n", err)
-		return
+func readPingPongCount(file *os.File) (int, error) {
+	r := bufio.NewScanner(file)
+	scanner := bufio.Scanner(*r)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if line != "" {
+			countInt, err := strconv.Atoi(line)
+			if err != nil {
+				return 0, err
+			}
+			return countInt, nil
+		}
 	}
-	defer file.Close()
+	if err := scanner.Err(); err != nil {
+		return 0, err
+	}
+	return 0, nil
+}
+
+func main() {
 
 	http.HandleFunc("/status", func(res http.ResponseWriter, req *http.Request) {
-		lastLogLine := readLastLogLine(file)
-		res.Write([]byte(lastLogLine))
+		// Open pod.log
+		logFile, err := os.OpenFile(logFilePath, os.O_RDONLY, 0644)
+		if err != nil {
+			fmt.Printf("Error opening file: %v\n", err)
+			return
+		}
+		defer logFile.Close()
+
+		// Read last log line
+		lastLogLine := readLastLogLine(logFile)
+
+		// Open pingpong.log
+		pingPongFile, err := os.OpenFile(pingPongFilePath, os.O_RDONLY, 0644)
+		if err != nil {
+			fmt.Printf("Error opening file: %v\n", err)
+			return
+		}
+		defer pingPongFile.Close()
+
+		// Read ping-pong count
+		pingPongCount, err := readPingPongCount(pingPongFile)
+		if err != nil {
+			fmt.Printf("Error reading ping-pong count: %v\n", err)
+			return
+		}
+
+		// Write response
+		res.Write([]byte(fmt.Sprintf("%s\nPing / Pongs: %d\n", lastLogLine, pingPongCount)))
 
 		// Log to console
 		fmt.Printf("%s: GET /status\n", time.Now().Format(time.RFC3339))
