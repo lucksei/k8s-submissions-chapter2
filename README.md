@@ -13,6 +13,7 @@
 - [1.9. More services](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.9/pingpong)
 - [1.10. Even more services](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.10/log-output)
 - [1.11. Persisting data](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.11)
+- [1.12 The project, step 6](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.12/todo-app)
 
 ## 1.1. Getting Started
 
