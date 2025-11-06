@@ -216,3 +216,9 @@ Rules:
 ```
 
 The `pingpong` app now saves the number of requests to the GET /pingpoint endpoint into a file `pingpong.log`. The `log-output-container1` app now reads the file and provides the content in the HTTP GET /status endpoint for the user to see. Both images are built and pushed to `docker.io`.
+
+# 1.12 The project, step 6
+
+Modified the `todo-app` to fetch a random image from Lorem Picsum and store it in the static dir. I.e. https://picsum.photos/1200/300. The image is saved inside the app's `/public` directory for 10 minutes and served as a static file for every request. When the time expires the image is presented one last time and then fetched again.
+
+Added a volume to the deployment for the `todo-app` to store said image in the PVC in case the pod is restarted, making it available for the next request as soon as the pod is ready. (Not sure if its ideal to use the same PVC for all apps, but works...).

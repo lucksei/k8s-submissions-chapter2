@@ -15,10 +15,17 @@ spec:
       labels:
         app: todo-app
     spec:
+      volumes:
+        - name: my-local-pvc
+          persistentVolumeClaim:
+            claimName: my-local-pvc
       containers:
         - image: lucksei/todo-app:latest
           imagePullPolicy: Always
           name: todo-app
+          volumeMounts:
+            - name: my-local-pvc
+              mountPath: /usr/src/app/public
           resources: {}
           env:
             - name: PORT

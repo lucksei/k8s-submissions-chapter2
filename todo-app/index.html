@@ -6,32 +6,94 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Project</title>
   <style>
-    body {
+    html {
+      font-family: Helvetica, sans-serif;
+      font-size: 16px;
+      color: #3a3649;
+      width: 100%;
       margin: 0;
       padding: 0;
-      background-color: #4f4f4f;
+      box-sizing: border-box;
     }
 
-    .titleContainer {
+    *,
+    *::before,
+    *::after {
+      box-sizing: inherit;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
       display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      min-width: 100vw;
-      color: #f0f0f0;
+      flex-direction: column;
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+    }
+
+    footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      background-color: #7D7A89;
+      padding: 0.4rem;
+    }
+
+    footer p {
+      color: #ffffff;
       text-align: center;
+      margin: 0;
+      padding: 0;
     }
 
     h1 {
+      margin-top: 0;
       font-size: 4rem;
+    }
+
+    div.img-container {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    div.img-container img {
+      width: 100%;
+      height: auto;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    div.content {
+      position: absolute;
+      top: calc(100vw * 0.2);
+      left: calc(50% - 47.5vw);
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      width: 95%;
+      min-height: calc(100vh - 100vw * 0.2);
+      margin: 0 auto;
+      padding: 1.5rem 6rem;
+      background-color: #ffffff;
+      box-shadow: 0 -15px 15px rgba(0, 0, 0, 0.1);
     }
   </style>
 </head>
 
 <body>
-  <div class="titleContainer">
+  <div class="img-container">
+    <img src="hourly.jpg" alt="hourly img">
+  </div>
+  <div class="content">
     <h1>The Project</h1>
   </div>
+  <footer>
+    <p>DevOps with Kubernetes 2025 <a href="https://github.com/lucksei">github/lucksei</href>
+    </p>
+  </footer>
 </body>
 
 </html>
