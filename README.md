@@ -188,3 +188,24 @@ docker build -t lucksei/log-output-container1 . -f ./Dockerfile.container1 && do
 ```
 
 Modified `deployment.yaml` to use two images inside the pod. Changed `service.yaml` and `ingress.yaml` to accomodate for the naming changes. Can now access the log-output app on http://localhost:8081/log-output when applying the manifests from the `./log-output/manifests` directory. (deleted the ingress from the `todo-app`)
+
+## 1.11. Persisting data
+
+Created directory for the local Persistent Volume
+
+```sh
+docker exec -it k3d-k3s-default-agent-0 mkdir -p /tmp/kube
+```
+
+also made:
+
+- a prestistent volume manifest `manifests/persistentVolume.yaml`.
+- a persistent volume claim `manifests/persistentVolumeClaim.yaml`
+- modified the `deployment.yaml` for the pingpong & log-output apps to use the PVC
+- moved the ingress from the `todo-app` to the `manifests/ingress.yaml` file to use it as the gateway for all my apps
+
+The pingpong app now saves the number of requests to the pingpong application into a file. Pushing image into repository
+
+```sh
+docker build -t lucksei/pingpong . && docker push lucksei/pingpong:latest
+```

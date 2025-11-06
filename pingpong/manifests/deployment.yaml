@@ -15,10 +15,17 @@ spec:
       labels:
         app: pingpong
     spec:
+      volumes:
+        - name: my-local-pvc
+          persistentVolumeClaim:
+            claimName: my-local-pvc
       containers:
         - name: pingpong
           image: lucksei/pingpong:latest
           resources: {}
+          volumeMounts:
+            - name: my-local-pvc
+              mountPath: /usr/src/app/data
           env:
             - name: PORT
               value: '3000'
