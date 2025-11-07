@@ -1,18 +1,19 @@
 package main
 
 import (
-	"bufio"
+	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 )
 
 const logFilePath = "./data/pod.log"
-const pingPongFilePath = "./data0/pingpong.log"
+const pingPongUrl = "http://pingpong-svc:3000/pings"
+
+// const pingPongFilePath = "./data0/pingpong.log"
 
 // from stackoverflow
 // https://stackoverflow.com/questions/17863821/how-to-read-last-lines-from-a-big-file-with-go-every-10-secs
@@ -39,23 +40,47 @@ func readLastLogLine(file *os.File) string {
 	return line
 }
 
-func readPingPongCount(file *os.File) (int, error) {
-	r := bufio.NewScanner(file)
-	scanner := bufio.Scanner(*r)
-	for scanner.Scan() {
-		line := scanner.Text()
-		if line != "" {
-			countInt, err := strconv.Atoi(line)
-			if err != nil {
-				return 0, err
-			}
-			return countInt, nil
-		}
-	}
-	if err := scanner.Err(); err != nil {
+// // NOTE: Removed writing to file for the time being (exercise 2.1)
+// func readPingPongCount(file *os.File) (int, error) {
+// 	r := bufio.NewScanner(file)
+// 	scanner := bufio.Scanner(*r)
+// 	for scanner.Scan() {
+// 		line := scanner.Text()
+// 		if line != "" {
+// 			countInt, err := strconv.Atoi(line)
+// 			if err != nil {
+// 				return 0, err
+// 			}
+// 			return countInt, nil
+// 		}
+// 	}
+// 	if err := scanner.Err(); err != nil {
+// 		return 0, err
+// 	}
+// 	return 0, nil
+// }
+
+type PingPongCount struct {
+	Pings int `json:"pings"`
+}
+
+func getPingPongCount(url string) (int, error) {
+	res, err := http.Get(url)
+	if err != nil {
 		return 0, err
 	}
-	return 0, nil
+	defer res.Body.Close()
+	bodyBytes, err := io.ReadAll(res.Body)
+	if err != nil {
+		return 0, err
+	}
+
+	var p PingPongCount
+	err = json.Unmarshal(bodyBytes, &p)
+	if err != nil {
+		return 0, err
+	}
+	return p.Pings, nil
 }
 
 func main() {
@@ -72,20 +97,27 @@ func main() {
 		// Read last log line
 		lastLogLine := readLastLogLine(logFile)
 
-		// Open pingpong.log
-		pingPongFile, err := os.OpenFile(pingPongFilePath, os.O_RDONLY, 0644)
+		pingPongCount, err := getPingPongCount(pingPongUrl)
 		if err != nil {
-			fmt.Printf("Error opening file: %v\n", err)
+			fmt.Printf("Error getting ping-pong count: %v\n", err)
 			return
 		}
-		defer pingPongFile.Close()
 
-		// Read ping-pong count
-		pingPongCount, err := readPingPongCount(pingPongFile)
-		if err != nil {
-			fmt.Printf("Error reading ping-pong count: %v\n", err)
-			return
-		}
+		// // NOTE: Removed writing to file for the time being (exercise 2.1)
+		// // Open pingpong.log
+		// pingPongFile, err := os.OpenFile(pingPongFilePath, os.O_RDONLY, 0644)
+		// if err != nil {
+		// 	fmt.Printf("Error opening file: %v\n", err)
+		// 	return
+		// }
+		// defer pingPongFile.Close()
+
+		// // Read ping-pong count
+		// pingPongCount, err := readPingPongCount(pingPongFile)
+		// if err != nil {
+		// 	fmt.Printf("Error reading ping-pong count: %v\n", err)
+		// 	return
+		// }
 
 		// Write response
 		res.Write([]byte(fmt.Sprintf("%s\nPing / Pongs: %d\n", lastLogLine, pingPongCount)))
