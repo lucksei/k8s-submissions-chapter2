@@ -13,7 +13,8 @@
 - [1.9. More services](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.9/pingpong)
 - [1.10. Even more services](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.10/log-output)
 - [1.11. Persisting data](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.11)
-- [1.12 The project, step 6](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.12/todo-app)
+- [1.12. The project, step 6](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.12/todo-app)
+- [1.13. The project, step 7](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.13/todo-app)
 
 ## 1.1. Getting Started
 
@@ -223,3 +224,7 @@ The `pingpong` app now saves the number of requests to the GET /pingpoint endpoi
 Modified the `todo-app` to fetch a random image from Lorem Picsum and store it in the static dir. I.e. https://picsum.photos/1200/300. The image is saved inside the app's `/public` directory for 10 minutes and served as a static file for every request. When the time expires the image is presented one last time and then fetched again.
 
 Added a volume to the deployment for the `todo-app` to store said image in the PVC in case the pod is restarted, making it available for the next request as soon as the pod is ready. (Not sure if its ideal to use the same PVC for all apps, but works...).
+
+# 1.13. The project, step 7
+
+Modified app static file and created a really simple form and todo list.
