@@ -51,6 +51,7 @@
     h1 {
       margin-top: 0;
       font-size: 4rem;
+      margin-bottom: 1.5rem;
     }
 
     div.img-container {
@@ -80,6 +81,65 @@
       background-color: #ffffff;
       box-shadow: 0 -15px 15px rgba(0, 0, 0, 0.1);
     }
+
+    div.todo-form-container {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 1rem;
+    }
+
+    form.todo-form {
+      display: flex;
+      flex-direction: row;
+    }
+
+    input.todo-input-text {
+      flex: 1;
+      width: 100%;
+      padding: 0.5rem;
+      margin-right: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    input.todo-input-text:focus {
+      outline: none;
+      border-color: #007bff;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    button.todo-add-button {
+      padding: 0.5rem 1rem;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    button.todo-add-button:hover {
+      background-color: #0069d9;
+    }
+
+    div.todo-list-container {
+      flex-grow: 1;
+      overflow-y: auto;
+    }
+
+    ul {
+      display: flex;
+      flex-direction: column;
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    ul li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #ccc;
+    }
   </style>
 </head>
 
@@ -89,11 +149,38 @@
   </div>
   <div class="content">
     <h1>The Project</h1>
+    <div class="todo-form-container">
+      <form class="todo-form" action="/todos" method="post" id="todo-form">
+        <input class="todo-input-text" type="text" name="todo" id="todo-input-text" placeholder="Add a todo" required>
+        <button class="todo-add-button" type="submit" id="todo-add-button">Add</button>
+      </form>
+    </div>
+    <div class="todo-list-container">
+      <ul id="todo-list">
+        <li>Learn JavaScript</li>
+        <li>Learn React</li>
+        <li>Build a project</li>
+      </ul>
+    </div>
   </div>
   <footer>
     <p>DevOps with Kubernetes 2025 <a href="https://github.com/lucksei">github/lucksei</href>
     </p>
   </footer>
+  <script>
+    const addTodoForm = document.getElementById('todo-form');
+    addTodoForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const formData = new FormData(addTodoForm)
+      const todoStr = formData.get('todo')
+      if (todoStr.length > 140) {
+        window.alert('Todo must be less than 140 characters long')
+        return
+      }
+      window.alert('Todo added')
+      return
+    })
+  </script>
 </body>
 
 </html>
