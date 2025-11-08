@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-backend
+spec:
+  selector:
+    matchLabels:
+      app: todo-backend
+  template:
+    metadata:
+      labels:
+        app: todo-backend
+    spec:
+      containers:
+        - image: lucksei/todo-backend:latest
+          imagePullPolicy: Always
+          name: todo-backend
+          resources: {}
+          env:
+            - name: PORT
+              value: '3000'
