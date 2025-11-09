@@ -8,7 +8,7 @@ const getPicLastModifiedDate = (filepath) => {
     const stats = fs.statSync(filepath)
     return stats.mtime;
   } catch (err) {
-    throw err
+    return undefined
   }
 }
 const getLoremPicsum = async (filepath) => {
