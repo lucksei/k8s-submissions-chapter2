@@ -1,8 +1,8 @@
-# K8s Solutions - Chapter 2 - Kubernetes Basics
+# Devops with Kubernetes - K8s Solutions
 
 ## Exercises
 
-- Chapter 2
+- Chapter 2 - Kubernetes Basics
   - [1.1. Getting Started](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.1/random-string-generator)
   - [1.2. The project, step 1](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.2/todo-app)
   - [1.3. Declarative approach](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.3/random-string-generator)
@@ -16,8 +16,9 @@
   - [1.11. Persisting data](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.11)
   - [1.12. The project, step 6](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.12/todo-app)
   - [1.13. The project, step 7](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.13/todo-app)
-- Chapter 3
+- Chapter 3 - More Building Blocks
   - [2.1. Connecting pods](https://github.com/lucksei/k8s-submissions-chapter3/tree/2.1)
+  - [2.2. The project, step 8](https://github.com/lucksei/k8s-submissions-chapter3/tree/2.2)
 
 ## Exercise notes
 
@@ -239,3 +240,14 @@ Modified app static file and created a really simple form and todo list.
 Commented out code for sharing single file `pingpong.log` between pods. New endpoint `/pings` on the `pingpong` app to get the pingpong count and feature to fetch it from the `log-output` app. Also removed the VolumeClaims (`my-local-pvc`) that were not used anymore inside each `deployment.yaml`. Did not delete the Persistent Volume Claim `my-local-pvc` since it is still used by the `todo-app` storing the `hourly.jpg` image.
 
 Working on http://localhost:8081/pingpong and http://localhost:8081/status
+
+### 2.2 The project, step 8
+
+Backtracked a bit, remade the `todo-app` as a modern app with React + Tailwind. Repurposed the express app as a mini backend server that serves the static files and also updates the `hourly.jpg` image every 10 minutes.
+I also created a todo-backend that serves via the `/api` from ingress.
+Modified all Dockerfiles, manifests and images. Took me more than what i thought it would. But it works now!
+
+App can be accessed on http://localhost:8081/ and calls the backend on:
+
+- GET http://localhost:8081/api/todos
+- POST http://localhost:8081/api/todos
