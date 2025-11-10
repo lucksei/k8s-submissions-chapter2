@@ -17,8 +17,8 @@
   - [1.12. The project, step 6](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.12/todo-app)
   - [1.13. The project, step 7](https://github.com/lucksei/k8s-submissions-chapter2/tree/1.13/todo-app)
 - Chapter 3 - More Building Blocks
-  - [2.1. Connecting pods](https://github.com/lucksei/k8s-submissions-chapter3/tree/2.1)
-  - [2.2. The project, step 8](https://github.com/lucksei/k8s-submissions-chapter3/tree/2.2)
+  - [2.1. Connecting pods](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.1)
+  - [2.2. The project, step 8](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.2)
 
 ## Exercise notes
 
