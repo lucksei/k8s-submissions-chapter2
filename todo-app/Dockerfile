@@ -24,6 +24,6 @@ COPY --from=building-stage --chown=node:node /usr/src/app/dist ./dist
 
 ENV NODE_ENV=production
 ENV STATIC_DIR=dist
-USER node
+# USER node
 
 ENTRYPOINT [ "npm", "run", "start" ]

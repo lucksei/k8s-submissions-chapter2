@@ -1,7 +1,7 @@
 const axios = require('axios');
 const fs = require('node:fs');
 
-const LOREM_PICSUM_URL = 'https://picsum.photos/1200/300'
+const LOREM_PICSUM_URL = 'https://picsum.photos/1200/400'
 
 const getPicLastModifiedDate = (filepath) => {
   try {

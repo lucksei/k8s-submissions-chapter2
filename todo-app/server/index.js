@@ -11,6 +11,7 @@ const dataDir = config.getDataDir()
 // Express app
 const app = express()
 app.use(express.static(staticDir, { index: false }));
+app.use(express.static(dataDir, { index: false }));
 
 // Fetch last modified date of image for the first time
 let lastPicsumDate = undefined
@@ -26,7 +27,7 @@ app.get('*splat', async (req, res) => {
   if (!lastPicsumDate || lastPicsumDate < new Date(Date.now() - config.hourlyImageRefreshIntervalMs)) {
     console.log(`Fetching new image: ${path.join(dataDir, "/hourly.jpg")}`)
     lastPicsumDate = new Date() // Update last modified date in memory
-    await getLoremPicsum(path.join(staticDir, "/public/static/hourly.jpg"));
+    await getLoremPicsum(path.join(dataDir, "/hourly.jpg"));
   }
 })
 
