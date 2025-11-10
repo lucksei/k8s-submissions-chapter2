@@ -1,10 +1,29 @@
+import { useState, useEffect } from 'react';
 import Footer from './components/Footer';
 import TodoForm from './components/TodoForm';
 import TodoList from './components/TodoList';
+import todosService from './services/todos';
 
-const todoList = ['Learn JavaScript', 'Learn React', 'Build a project'];
+// const todoList = ['Learn JavaScript', 'Learn React', 'Build a project'];
 
 const App = () => {
+  const [todos, setTodos] = useState([]);
+
+  useEffect(() => {
+    const fetchTodos = async () => {
+      const todos = await todosService.getTodos();
+      console.log(todos);
+      setTodos(todos);
+    };
+
+    fetchTodos();
+  }, []);
+
+  const handleSubmit = async (todo) => {
+    const newTodo = await todosService.createTodo({ todo: todo });
+    setTodos(todos.concat(newTodo));
+  };
+
   return (
     <>
       <div className="flex flex-col justify-center items-center">
@@ -15,8 +34,8 @@ const App = () => {
             src="hourly.jpg"
             alt="hourly img"
           />
-          <TodoForm />
-          <TodoList todoList={todoList} />
+          <TodoForm onSubmit={handleSubmit} />
+          <TodoList todoList={todos} />
         </div>
       </div>
       <Footer />

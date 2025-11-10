@@ -29,5 +29,5 @@ spec:
           resources: {}
           env:
             - name: PORT
-              value: '3005'
+              value: '3000'
 status: {}

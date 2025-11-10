@@ -1,5 +1,6 @@
 import { useState } from 'react';
-const TodoForm = () => {
+
+const TodoForm = ({ onSubmit }) => {
   const [todo, setTodo] = useState('');
 
   const handleSubmit = (e) => {
@@ -7,7 +8,7 @@ const TodoForm = () => {
     if (todo.length >= 140) {
       alert('Todo is too long. Max length is 140 characters.');
     }
-    console.log(todo);
+    onSubmit(todo);
   };
   return (
     <div>

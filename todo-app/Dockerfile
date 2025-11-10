@@ -6,6 +6,8 @@ COPY frontend/package*.json ./
 
 RUN npm ci
 
+ARG API_URL=http://localhost:8081
+
 COPY frontend/ .
 
 RUN npm run build
