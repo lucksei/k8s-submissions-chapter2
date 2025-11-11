@@ -22,6 +22,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [2.1. Connecting pods](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.1)
   - [2.2. The project, step 8](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.2)
   - [2.3. Keep them separated](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.3)
+  - [2.4. The project, step 9](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.4)
 
 ## Exercise notes
 
@@ -269,3 +270,13 @@ Deleted resources from `default` and created them again in the `exercises` names
 
 - http://localhost:8081/pingpong
 - http://localhost:8081/status
+
+### 2.4. The project, step 9
+
+Created new namespace `project` for the `todo-app` and the `todo-backend` apps.
+
+```sh
+kubectl create namespace project
+```
+
+Deleted resources from `default` and created them again in the `project` namespace. Also recreated the ingress like before. Funny enough i did not know that 'Persistent Volumes' are cluster-wide resources unlike the rest of the resources deployed
