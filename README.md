@@ -21,6 +21,7 @@ The repository contains **all chapters** from the course, not just the ones from
 - Chapter 3 - More Building Blocks
   - [2.1. Connecting pods](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.1)
   - [2.2. The project, step 8](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.2)
+  - [2.3. Keep them separated](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.3)
 
 ## Exercise notes
 
