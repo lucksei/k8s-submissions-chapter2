@@ -18,9 +18,6 @@ spec:
       volumes:
         - name: shared-data
           emptyDir: {}
-        # - name: my-local-pvc
-        #   persistentVolumeClaim:
-        #     claimName: my-local-pvc
       containers:
         - image: lucksei/log-output-container0:latest
           name: log-output-container0
@@ -33,7 +30,5 @@ spec:
           volumeMounts:
             - name: shared-data
               mountPath: /usr/src/app/data
-            # - name: my-local-pvc
-            #   mountPath: /usr/src/app/data0
           resources: {}
 status: {}

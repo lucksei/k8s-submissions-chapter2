@@ -245,6 +245,8 @@ Working on http://localhost:8081/pingpong and http://localhost:8081/status
 
 ### 2.2 The project, step 8
 
+Hardest exercise so far.
+
 Backtracked a bit, remade the `todo-app` as a modern app with React + Tailwind. Repurposed the express app as a mini backend server that serves the static files and also updates the `hourly.jpg` image every 10 minutes.
 I also created a todo-backend that serves via the `/api` from ingress.
 Modified all Dockerfiles, manifests and images. Took me more than what i thought it would. But it works now!
@@ -253,3 +255,16 @@ App can be accessed on http://localhost:8081/ and calls the backend on:
 
 - GET http://localhost:8081/api/todos
 - POST http://localhost:8081/api/todos
+
+### 2.3. Keep them separated
+
+Created new namespace `exercises` for the `pingpong` and the `log-output` apps.
+
+```sh
+kubectl create namespace exercises
+```
+
+Deleted resources from `default` and created them again in the `exercises` namespace. Also recreated the same ingress so that the apps can be accessed. Like before the apps are accessible on:
+
+- http://localhost:8081/pingpong
+- http://localhost:8081/status
