@@ -1,5 +1,7 @@
 # Devops with Kubernetes - K8s Solutions
 
+The repository contains **all chapters** from the course, not just the ones from chapter 2. The name k8s-submissions-chapter2 comes from the fact that i wrongly expected each chapter to be a separate repository. I decided to not fix it and keep the name as it is since it would break the links & i would have to fix releases manually i believe.
+
 ## Exercises
 
 - Chapter 2 - Kubernetes Basics
