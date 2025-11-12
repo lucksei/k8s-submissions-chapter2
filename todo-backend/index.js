@@ -5,7 +5,7 @@ require('dotenv').config();
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // No idea if this is needed and why, got vibecoded in the process sry... :(
+app.use(express.urlencoded({ extended: true }));
 
 // Saved in memory
 const todosList = ['Learn JavaScript', 'Learn React', 'Build a project'];

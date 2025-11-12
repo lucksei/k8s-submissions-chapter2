@@ -16,6 +16,6 @@ spec:
           imagePullPolicy: Always
           name: todo-backend
           resources: {}
-          env:
-            - name: PORT
-              value: '3000'
+          envFrom:
+            - configMapRef:
+                name: todo-backend-cm
