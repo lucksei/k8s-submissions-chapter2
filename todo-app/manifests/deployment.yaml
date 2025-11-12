@@ -27,7 +27,7 @@ spec:
             - name: my-local-pvc
               mountPath: /usr/src/data
           resources: {}
-          env:
-            - name: PORT
-              value: '3000'
+          envFrom:
+            - configMapRef:
+                name: todo-app-cm
 status: {}

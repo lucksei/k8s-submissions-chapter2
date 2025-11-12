@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
+import config from './utils/config';
 import Footer from './components/Footer';
 import TodoForm from './components/TodoForm';
 import TodoList from './components/TodoList';
 import todosService from './services/todos';
-
-// const todoList = ['Learn JavaScript', 'Learn React', 'Build a project'];
 
 const App = () => {
   const [todos, setTodos] = useState([]);
@@ -31,7 +30,7 @@ const App = () => {
           <h1>The Project</h1>
           <img
             className="shadow-md rounded-md"
-            src="hourly.jpg"
+            src={config.hourlyImageUrl}
             alt="hourly img"
           />
           <TodoForm onSubmit={handleSubmit} />

@@ -1,9 +1,9 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:8081'
+import config from '../utils/config'
 
 const getTodos = async () => {
   try {
-    const response = await axios.get(`${baseUrl}/api/todos`)
+    const response = await axios.get(`${config.baseUrl}/api/todos`)
     return response.data
   } catch (err) {
     throw err
@@ -12,7 +12,7 @@ const getTodos = async () => {
 
 const createTodo = async (todo) => {
   try {
-    const response = await axios.post(`${baseUrl}/api/todos`, todo)
+    const response = await axios.post(`${config.baseUrl}/api/todos`, todo)
     return response.data
   } catch (err) {
     throw response
