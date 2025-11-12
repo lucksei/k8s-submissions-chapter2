@@ -1,23 +1,32 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 )
 
 const logFilePath = "./data/pod.log"
 const pingPongUrl = "http://pingpong-svc:3000/pings"
-
-// const pingPongFilePath = "./data0/pingpong.log"
+const informationFilePath = "./data/information.txt"
 
 // from stackoverflow
 // https://stackoverflow.com/questions/17863821/how-to-read-last-lines-from-a-big-file-with-go-every-10-secs
-func readLastLogLine(file *os.File) string {
+func readLastLogLine(filepath string) (string, error) {
+	// Open file
+	file, err := os.OpenFile(filepath, os.O_RDONLY, 0644)
+	if err != nil {
+		fmt.Printf("Error opening file: %v\n", err)
+		return "", err
+	}
+
+	defer file.Close()
 	line := ""
 	var cursor int64 = 0
 	stat, _ := file.Stat()
@@ -37,28 +46,31 @@ func readLastLogLine(file *os.File) string {
 			break
 		}
 	}
-	return line
+	return line, nil
 }
 
-// // NOTE: Removed writing to file for the time being (exercise 2.1)
-// func readPingPongCount(file *os.File) (int, error) {
-// 	r := bufio.NewScanner(file)
-// 	scanner := bufio.Scanner(*r)
-// 	for scanner.Scan() {
-// 		line := scanner.Text()
-// 		if line != "" {
-// 			countInt, err := strconv.Atoi(line)
-// 			if err != nil {
-// 				return 0, err
-// 			}
-// 			return countInt, nil
-// 		}
-// 	}
-// 	if err := scanner.Err(); err != nil {
-// 		return 0, err
-// 	}
-// 	return 0, nil
-// }
+func stringFromFile(filepath string) (string, error) {
+	// Open file
+	file, err := os.OpenFile(filepath, os.O_RDONLY, 0644)
+	if err != nil {
+		fmt.Printf("Error opening file: %v\n", err)
+		return "", err
+	}
+	defer file.Close()
+
+	var builder strings.Builder
+	scanner := bufio.NewScanner(file)
+
+	// Read file
+	for scanner.Scan() {
+		builder.WriteString(scanner.Text())
+		builder.WriteString("\n")
+	}
+	if err := scanner.Err(); err != nil {
+		return "", err
+	}
+	return builder.String(), nil
+}
 
 type PingPongCount struct {
 	Pings int `json:"pings"`
@@ -84,46 +96,46 @@ func getPingPongCount(url string) (int, error) {
 }
 
 func main() {
+	message, ok := os.LookupEnv("MESSAGE")
+	if !ok {
+		fmt.Printf("MESSAGE env var not found")
+		return
+	}
 
 	http.HandleFunc("/status", func(res http.ResponseWriter, req *http.Request) {
-		// Open pod.log
-		logFile, err := os.OpenFile(logFilePath, os.O_RDONLY, 0644)
+		// Read last log line
+		lastLogLine, err := readLastLogLine(logFilePath)
 		if err != nil {
-			fmt.Printf("Error opening file: %v\n", err)
+			fmt.Printf("Error reading last log line: %v\n", err)
+			res.WriteHeader(http.StatusInternalServerError)
+			res.Write([]byte("Error reading last log line"))
 			return
 		}
-		defer logFile.Close()
 
-		// Read last log line
-		lastLogLine := readLastLogLine(logFile)
-
+		// Get ping-pong count
 		pingPongCount, err := getPingPongCount(pingPongUrl)
 		if err != nil {
 			fmt.Printf("Error getting ping-pong count: %v\n", err)
+			res.WriteHeader(http.StatusInternalServerError)
+			res.Write([]byte("Error getting ping-pong count"))
 			return
 		}
 
-		// // NOTE: Removed writing to file for the time being (exercise 2.1)
-		// // Open pingpong.log
-		// pingPongFile, err := os.OpenFile(pingPongFilePath, os.O_RDONLY, 0644)
-		// if err != nil {
-		// 	fmt.Printf("Error opening file: %v\n", err)
-		// 	return
-		// }
-		// defer pingPongFile.Close()
-
-		// // Read ping-pong count
-		// pingPongCount, err := readPingPongCount(pingPongFile)
-		// if err != nil {
-		// 	fmt.Printf("Error reading ping-pong count: %v\n", err)
-		// 	return
-		// }
+		// Read information file
+		information, err := stringFromFile(informationFilePath)
+		if err != nil {
+			fmt.Printf("Error reading information file: %v\n", err)
+			res.WriteHeader(http.StatusInternalServerError)
+			res.Write([]byte("Error reading information file"))
+			return
+		}
 
 		// Write response
-		res.Write([]byte(fmt.Sprintf("%s\nPing / Pongs: %d\n", lastLogLine, pingPongCount)))
+		res.Write([]byte(fmt.Sprintf("file content: %s\nenv variable: MESSAGE=%s\n%s\nPing / Pongs: %d\n", information, message, lastLogLine, pingPongCount)))
 
 		// Log to console
 		fmt.Printf("%s: GET /status\n", time.Now().Format(time.RFC3339))
+		return
 	})
 
 	log.Fatal(http.ListenAndServe(":3000", nil))

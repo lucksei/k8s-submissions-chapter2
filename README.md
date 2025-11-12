@@ -1,6 +1,6 @@
 # Devops with Kubernetes - K8s Solutions
 
-The repository contains **all chapters** from the course, not just the ones from chapter 2. The name k8s-submissions-chapter2 comes from the fact that i wrongly expected each chapter to be a separate repository. I decided to not fix it and keep the name as it is since it would break the links & i would have to fix releases manually i believe.
+The repository contains **all chapters** from the course, not just the ones from chapter 2. The name k8s-submissions-chapter2 comes from the fact that I wrongly expected each chapter to be a separate repository. Decided to not fix it and keep the name as it is since it would break the links & would have to fix releases manually I believe.
 
 ## Exercises
 
@@ -23,6 +23,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [2.2. The project, step 8](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.2)
   - [2.3. Keep them separated](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.3)
   - [2.4. The project, step 9](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.4)
+  - [2.5. Documentation and ConfigMaps](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.5)
 
 ## Exercise notes
 
@@ -280,3 +281,7 @@ kubectl create namespace project
 ```
 
 Deleted resources from `default` and created them again in the `project` namespace. Also recreated the ingress like before. Funny enough i did not know that 'Persistent Volumes' are cluster-wide resources unlike the rest of the resources deployed
+
+### 2.5. Documentation and ConfigMaps
+
+Created a ConfigMap for the `log-output` app with the `information.txt` file contents and the `MESSAGE` environment variable. These map to an env and a volume respectively inside the container `log-output-container1` of the app's deployment. App can be accessed on http://localhost:8081/status

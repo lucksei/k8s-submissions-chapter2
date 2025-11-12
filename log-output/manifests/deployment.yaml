@@ -18,6 +18,12 @@ spec:
       volumes:
         - name: shared-data
           emptyDir: {}
+        - name: information
+          configMap:
+            name: log-output-cm
+            items:
+              - key: information.txt
+                path: information.txt
       containers:
         - image: lucksei/log-output-container0:latest
           name: log-output-container0
@@ -30,5 +36,15 @@ spec:
           volumeMounts:
             - name: shared-data
               mountPath: /usr/src/app/data
+            - name: information
+              mountPath: /usr/src/app/data/information.txt
+              subPath: information.txt
+              readOnly: true
+          env:
+            - name: MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: log-output-cm
+                  key: MESSAGE
           resources: {}
 status: {}
