@@ -23,7 +23,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [2.2. The project, step 8](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.2)
   - [2.3. Keep them separated](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.3)
   - [2.4. The project, step 9](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.4)
-  - [2.5. Documentation and ConfigMaps](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.5)
+  - [2.5. Documentation and ConfigMaps](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.5/log-output)
 
 ## Exercise notes
 
