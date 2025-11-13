@@ -24,6 +24,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [2.3. Keep them separated](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.3)
   - [2.4. The project, step 9](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.4)
   - [2.5. Documentation and ConfigMaps](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.5/log-output)
+  - [2.6. The project, step 10](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.6)
 
 ## Exercise notes
 
@@ -285,3 +286,9 @@ Deleted resources from `default` and created them again in the `project` namespa
 ### 2.5. Documentation and ConfigMaps
 
 Created a ConfigMap for the `log-output` app with the `information.txt` file contents and the `MESSAGE` environment variable. These map to an env and a volume respectively inside the container `log-output-container1` of the app's deployment. App can be accessed on http://localhost:8081/status
+
+### 2.6. The project, step 10
+
+Created ConfigMaps for the `todo-app` and the `todo-backend`. URLs, ports and other configurations are now customizable via environment variables and are loaded using their respective ConfigMaps.
+
+App available on http://localhost:8081/
