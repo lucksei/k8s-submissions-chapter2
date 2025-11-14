@@ -25,6 +25,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [2.4. The project, step 9](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.4)
   - [2.5. Documentation and ConfigMaps](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.5/log-output)
   - [2.6. The project, step 10](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.6)
+  - [2.7. Stateful applications](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.7/pingpong)
 
 ## Exercise notes
 
@@ -292,3 +293,9 @@ Created a ConfigMap for the `log-output` app with the `information.txt` file con
 Created ConfigMaps for the `todo-app` and the `todo-backend`. URLs, ports and other configurations are now customizable via environment variables and are loaded using their respective ConfigMaps.
 
 App available on http://localhost:8081/
+
+### 2.7. Stateful applications
+
+Created StatefulSet `pingpong-postgres-database` for the `pingpong` app. The app now uses sequelize to connect to this database. Reused code from fullstack project for the database connection & migrations.
+
+can now ping using http://localhost:8081/pingpong

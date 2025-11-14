@@ -1,30 +1,24 @@
 const express = require('express')
-// const fs = require('node:fs')
+const config = require('./utils/config')
+const sequelize = require('./utils/db')
+const { PingPong } = require('./utils/models')
 
 const app = express()
 app.use(express.json())
-require('dotenv').config()
 
-// const filepath = process.env.FILEPATH || "./data/pingpong.log"
+sequelize.connectToDatabase()
 
-const PORT = process.env.PORT || 3000
-let pongCount = 0
-
-app.get('/pingpong', (req, res) => {
-  pongCount++
-  // NOTE: Removed writing to file for the time being (exercise 2.1)
-  // fs.writeFile(filepath, String(pongCount), 'utf8', err => {
-  //   if (err) {
-  //     console.error(err)
-  //   }
-  // });
-  return res.send(`pong ${pongCount}`);
+app.get('/pingpong', async (req, res) => {
+  await PingPong.create({});
+  const pingpongCount = await PingPong.count({})
+  return res.send(`pong ${pingpongCount}`);
 })
 
 app.get('/pings', (req, res) => {
-  return res.send({ pings: pongCount });
+  const pingpongCount = PingPong.count({})
+  return res.send({ pings: pingpongCount });
 })
 
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`)
+app.listen(config.port, () => {
+  console.log(`Listening on port ${config.port}`)
 })
