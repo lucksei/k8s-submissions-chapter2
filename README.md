@@ -26,6 +26,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [2.5. Documentation and ConfigMaps](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.5/log-output)
   - [2.6. The project, step 10](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.6)
   - [2.7. Stateful applications](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.7/pingpong)
+  - [2.8. The project, step 11](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.8)
 
 ## Exercise notes
 
@@ -299,3 +300,13 @@ App available on http://localhost:8081/
 Created StatefulSet `pingpong-postgres-database` for the `pingpong` app. The app now uses sequelize to connect to this database. Reused code from fullstack project for the database connection & migrations.
 
 can now ping using http://localhost:8081/pingpong
+
+### 2.8. The project, step 11
+
+Copied StatefulSet and the code from the pingpong app and applied it to the todo-backend app. It now uses postgres to store the todos.
+
+Testing the database with ephemeral pod
+
+```sh
+kubectl run -it --rm --restart=Never --image postgres psql-for-debugging psql postgres://todo:todo@todo-backend-postgres-svc:5432/todo
+```
