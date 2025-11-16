@@ -310,3 +310,27 @@ Testing the database with ephemeral pod
 ```sh
 kubectl run -it --rm --restart=Never --image postgres psql-for-debugging psql postgres://todo:todo@todo-backend-postgres-svc:5432/todo
 ```
+
+Moved `DATABASE_URI` variable to secrets since it contains the credentials.
+
+- Using SOPS tool to encrypt the `secrets.yaml`: https://github.com/getsops/sops
+- Installed age for encryption: https://github.com/FiloSottile/age
+
+Creating a key-pair, this will not be pushed to git so add it to the `.gitignore`
+
+```sh
+age-keygen -o key.txt
+```
+
+Create Base64 for my secrets
+
+```sh
+echo -n '...' | base64
+```
+
+```sh
+sops --encrypt \
+     --age $(awk '/public key/' key.txt | awk -F': ' '{print $2}') \
+     --encrypted-regex '^(data)$' \
+     secrets.yaml > secrets.enc.yaml
+```

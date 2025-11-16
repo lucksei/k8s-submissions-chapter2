@@ -19,3 +19,9 @@ spec:
           envFrom:
             - configMapRef:
                 name: todo-backend-cm
+          env:
+            - name: DATABASE_URI
+              valueFrom:
+                secretKeyRef:
+                  key: DATABASE_URI
+                  name: todo-backend-secret

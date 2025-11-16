@@ -4,4 +4,3 @@ metadata:
   name: todo-backend-cm
 data:
   PORT: '3000'
-  DATABASE_URI: 'postgres://todo:todo@todo-backend-postgres-svc:5432/todo'
