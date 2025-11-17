@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: todo-app-cm
+data:
+  # Common
+  NODE_ENV: production
+  # Server env vars
+  STATIC_DIR: dist
+  DATA_DIR: /usr/src/data
+  HOURLY_IMAGE_REFRESH_INTERVAL_SECONDS: '600'
+  PORT: '3000'
+  LOREM_PICSUM_URL: https://picsum.photos/1200/400
+  LOREM_PICSUM_IMAGE_NAME: 'hourly.jpg'
+  # Cronjob that creates a new todo with a random url in the backend
+  cron_job.sh: |
+    #!/bin/bash
+    echo "$(date) - Running todo job"
+    WIKIPEDIA_RANDOM_PAGE_URL=$(curl -L -I "https://en.wikipedia.org/wiki/Special:Random" | grep "location:" | awk -F' ' '{print $2}' | tr -d '\r\n')
+    echo "WIKIPEDIA_RANDOM_PAGE_URL: ${WIKIPEDIA_RANDOM_PAGE_URL}"
+    curl -X POST -H "Content-Type: application/json" -d "{\"todo\": \"Read ${WIKIPEDIA_RANDOM_PAGE_URL} here\"}" "${BASE_URL}/api/todos"
+    if [[ $? -ne 0 ]] then exit 1; fi

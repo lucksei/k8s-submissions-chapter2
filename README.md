@@ -27,6 +27,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [2.6. The project, step 10](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.6)
   - [2.7. Stateful applications](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.7/pingpong)
   - [2.8. The project, step 11](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.8)
+  - [2.9 The project, step 12](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.9/todo-project)
 
 ## Exercise notes
 
@@ -334,3 +335,7 @@ sops --encrypt \
      --encrypted-regex '^(data)$' \
      secrets.yaml > secrets.enc.yaml
 ```
+
+### 2.9 The project, step 12
+
+Created a new CronJob resource that pushes a new todo every minute to remind you to read a random wikipedia article. Also reordered the app structure inside a new root directory `todo-project`.
