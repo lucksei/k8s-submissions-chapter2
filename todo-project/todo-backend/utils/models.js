@@ -9,8 +9,9 @@ Todo.init({
     autoIncrement: true,
   },
   todo: {
-    type: DataTypes.STRING,
+    type: DataTypes.STRING(140),
     allowNull: false,
+
   },
 }, {
   sequelize,

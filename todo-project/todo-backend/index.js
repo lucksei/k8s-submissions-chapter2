@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   return res.status(200).send('Hello from the backend!');
 })
 

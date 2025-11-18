@@ -1,6 +1,15 @@
 import axios from 'axios'
 import config from '../utils/config'
 
+const healthCheck = async () => {
+  try {
+    await axios.get(`${config.baseUrl}/api`)
+    return true
+  } catch (err) {
+    return false
+  }
+}
+
 const getTodos = async () => {
   try {
     const response = await axios.get(`${config.baseUrl}/api/todos`)
@@ -20,6 +29,7 @@ const createTodo = async (todo) => {
 }
 
 export default {
+  healthCheck,
   getTodos,
-  createTodo
+  createTodo,
 }

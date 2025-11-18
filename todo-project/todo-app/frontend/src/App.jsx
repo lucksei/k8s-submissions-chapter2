@@ -6,6 +6,7 @@ import TodoList from './components/TodoList';
 import todosService from './services/todos';
 
 const App = () => {
+  const [healthy, setHealthy] = useState(false);
   const [todos, setTodos] = useState([]);
 
   useEffect(() => {
@@ -18,10 +19,27 @@ const App = () => {
     fetchTodos();
   }, []);
 
+  useEffect(() => {
+    const healthCheck = async () => {
+      const healthy = await todosService.healthCheck();
+      setHealthy(healthy);
+    };
+
+    healthCheck();
+  }, []);
+
   const handleSubmit = async (todo) => {
     const newTodo = await todosService.createTodo({ todo: todo });
     setTodos(todos.concat(newTodo));
   };
+
+  if (!healthy) {
+    return (
+      <div className="flex flex-col justify-center items-center">
+        <h1>Loading...</h1>
+      </div>
+    );
+  }
 
   return (
     <>
