@@ -339,3 +339,153 @@ sops --encrypt \
 ### 2.9 The project, step 12
 
 Created a new CronJob resource that pushes a new todo every minute to remind you to read a random wikipedia article. Also reordered the app structure inside a new root directory `todo-project`.
+
+### 2.10
+
+Installed helm using the docs: https://helm.sh/docs/intro/install/ & updated the repo
+
+To install the [kube-prometheus stack](https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack) first add the repositories, install the chart and update:
+
+```sh
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add stable https://charts.helm.sh/stable
+helm install my-kube-prometheus-stack prometheus-community/kube-prometheus-stack --version 79.5.0
+helm repo update
+```
+
+```
+NAME: my-kube-prometheus-stack
+LAST DEPLOYED: Mon Nov 17 19:15:47 2025
+NAMESPACE: prometheus
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+NOTES:
+kube-prometheus-stack has been installed. Check its status by running:
+  kubectl --namespace prometheus get pods -l "release=my-kube-prometheus-stack"
+
+Get Grafana 'admin' user password by running:
+
+  kubectl --namespace prometheus get secrets my-kube-prometheus-stack-grafana -o jsonpath="{.data.admin-password}" | base64 -d ; echo
+
+Access Grafana local instance:
+
+  export POD_NAME=$(kubectl --namespace prometheus get pod -l "app.kubernetes.io/name=grafana,app.kubernetes.io/instance=my-kube-prometheus-stack" -oname)
+  kubectl --namespace prometheus port-forward $POD_NAME 3000
+
+Get your grafana admin user password by running:
+
+  kubectl get secret --namespace prometheus -l app.kubernetes.io/component=admin-secret -o jsonpath="{.items[0].data.admin-password}" | base64 --decode ; echo
+
+
+Visit https://github.com/prometheus-operator/kube-prometheus for instructions on how to create & configure Alertmanager and Prometheus instances using the Operator.
+```
+
+Installing the [Loki Chart](https://github.com/grafana/loki/tree/main/production/helm/loki)
+
+```sh
+# Add Helm repository
+helm repo add grafana https://grafana.github.io/helm-charts
+# Print values into a file for easier configuration
+helm show values grafana/loki --version 6.46.0 > loki-values.yaml
+```
+
+Modified `loki-values.yaml` and set:
+
+- `deploymentMode: SingleBinary`
+- `useTestSchema: true`
+- `auth_enabled: false`
+
+```yaml
+commonConfig:
+  path_prefix: /var/loki
+  replication_factor: 1
+```
+
+Also uncommented the lines below
+
+```yaml
+storage:
+  # Loki requires a bucket for chunks and the ruler. GEL requires a third bucket for the admin API.
+  # Please provide these values if you are using object storage.
+  bucketNames:
+    chunks: chunks # <- This
+    ruler: ruler # <- This
+    admin: admin # <- This
+```
+
+```sh
+helm install my-loki grafana/loki --version 6.46.0 -f loki-values.yaml
+```
+
+> everything can be easily deleted with `helm uninstall my-loki`
+
+```
+NAME: my-loki
+LAST DEPLOYED: Mon Nov 17 23:56:47 2025
+NAMESPACE: grafana-loki
+STATUS: deployed
+REVISION: 1
+DESCRIPTION: Install complete
+NOTES:
+***********************************************************************
+ Welcome to Grafana Loki
+ Chart version: 6.46.0
+ Chart Name: loki
+ Loki version: 3.5.7
+***********************************************************************
+
+** Please be patient while the chart is being deployed **
+
+Tip:
+
+  Watch the deployment status using the command: kubectl get pods -w --namespace grafana-loki
+
+If pods are taking too long to schedule make sure pod affinity can be fulfilled in the current cluster.
+
+***********************************************************************
+Installed components:
+***********************************************************************
+* loki
+
+Loki has been deployed as a single binary.
+This means a single pod is handling reads and writes. You can scale that pod vertically by adding more CPU and memory resources.
+
+
+***********************************************************************
+Sending logs to Loki
+***********************************************************************
+
+Loki has been configured with a gateway (nginx) to support reads and writes from a single component.
+
+You can send logs from inside the cluster using the cluster DNS:
+
+http://my-loki-gateway.grafana-loki.svc.cluster.local/loki/api/v1/push
+
+You can test to send data from outside the cluster by port-forwarding the gateway to your local machine:
+
+  kubectl port-forward --namespace grafana-loki svc/my-loki-gateway 3100:80 &
+
+And then using http://127.0.0.1:3100/loki/api/v1/push URL as shown below:
+
+\`\`\`
+curl -H "Content-Type: application/json" -XPOST -s "http://127.0.0.1:3100/loki/api/v1/push"  \
+--data-raw "{\"streams\": [{\"stream\": {\"job\": \"test\"}, \"values\": [[\"$(date +%s)000000000\", \"fizzbuzz\"]]}]}"
+\`\`\`
+
+Then verify that Loki did receive the data using the following command:
+
+\`\`\`
+curl "http://127.0.0.1:3100/loki/api/v1/query_range" --data-urlencode 'query={job="test"}' | jq .data.result
+\`\`\`
+
+***********************************************************************
+Connecting Grafana to Loki
+***********************************************************************
+
+If Grafana operates within the cluster, you'll set up a new Loki datasource by utilizing the following URL:
+
+http://my-loki-gateway.grafana-loki.svc.cluster.local/
+```
+
+Now add the Loki datasource to Grafana in Connections -> Datasources and point it to http://my-loki-gateway.grafana-loki.svc.cluster.local/
