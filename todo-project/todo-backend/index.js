@@ -1,17 +1,21 @@
 const express = require('express');
 const cors = require('cors');
+const morgan = require('morgan')
 const config = require('./utils/config');
 const { sequelize, connectToDatabase } = require('./utils/db');
 const { Todo } = require('./utils/models');
 
 
+// Connect to the database
 connectToDatabase();
 
 
+// Create express app & use middleware
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 
 
 app.get('/api', (req, res) => {

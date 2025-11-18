@@ -7,6 +7,7 @@ const TodoForm = ({ onSubmit }) => {
     e.preventDefault();
     if (todo.length >= 140) {
       alert('Todo is too long. Max length is 140 characters.');
+      return;
     }
     setTodo('');
     onSubmit(todo);

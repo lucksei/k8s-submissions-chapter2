@@ -28,6 +28,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [2.7. Stateful applications](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.7/pingpong)
   - [2.8. The project, step 11](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.8)
   - [2.9 The project, step 12](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.9/todo-project)
+  - [2.10. The project, step 13](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.10/todo-project)
 
 ## Exercise notes
 
@@ -340,7 +341,7 @@ sops --encrypt \
 
 Created a new CronJob resource that pushes a new todo every minute to remind you to read a random wikipedia article. Also reordered the app structure inside a new root directory `todo-project`.
 
-### 2.10
+### 2.10. The project, step 13
 
 Installed helm using the docs: https://helm.sh/docs/intro/install/ & updated the repo
 
@@ -394,3 +395,21 @@ helm upgrade --install loki --namespace grafana-loki grafana/loki-stack --set lo
 Added the "Datasource" inside of grafana with url: http://loki.grafana-loki.svc.cluster.local:3100/
 
 It now shows the logs from the cluster inside the "Explore" tab.
+
+Modified the app project, forgot to add checks for max chars in the postgres-db and backend, also added the morgan request logger. Using curl to test the app:
+
+Working with normal todo
+
+```sh
+curl -X POST http://localhost:8081/api/todos -d '{"todo": "Test normal todo"}' -H "Content-Type: application/json"
+```
+
+Failing with too long todo (max 140 characters)
+
+```sh
+curl -X POST http://localhost:8081/api/todos -d "{\"todo\": \"$(seq -s ' ' 1 1000)\"}" -H "Content-Type: application/json"
+```
+
+This can be seen inside the "Explore" tab of grafana
+
+![exerecise_2_10](img/20251118-00-exercise_2_10.png)
