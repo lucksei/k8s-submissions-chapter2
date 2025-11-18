@@ -9,9 +9,10 @@ const TodoForm = ({ onSubmit }) => {
       alert('Todo is too long. Max length is 140 characters.');
       return;
     }
-    setTodo('');
     onSubmit(todo);
+    setTodo('');
   };
+
   return (
     <div>
       <form
