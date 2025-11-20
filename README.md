@@ -29,6 +29,10 @@ The repository contains **all chapters** from the course, not just the ones from
   - [2.8. The project, step 11](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.8)
   - [2.9 The project, step 12](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.9/todo-project)
   - [2.10. The project, step 13](https://github.com/lucksei/k8s-submissions-chapter2/tree/2.10/todo-project)
+- Chapter 4 - To the Cloud
+  - [3.1. Pingpong GKE](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.1/pingpong)
+
+### 3.1. Pingpong GKE
 
 ## Exercise notes
 
