@@ -417,12 +417,21 @@ This can be seen inside the "Explore" tab of grafana
 ### 3.1. Pingpong GKE
 
 
-Installed gcloud sdk from here https://docs.cloud.google.com/sdk/docs/install. Log in with
+Installed gcloud sdk from here. https://docs.cloud.google.com/sdk/docs/install.
+
+Install plugin for kubectl. https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl
+
+```sh
+gcloud components install gke-gcloud-auth-plugin
+```
+
+Log in with
 
 ```sh
 gcloud auth login
 ...
 ```
+
 Setting the project with my id
 
 ```sh
@@ -452,4 +461,8 @@ gcloud container clusters create dwk-cluster \
 gcloud services enable container.googleapis.com
 ```
 
-The installation sets the `kubeconfig` to point to the newly created cluster. Check with `kubectl cluster-info`
+The installation sets the `kubeconfig` to point to the newly created cluster. Check with `kubectl cluster-info`.
+
+Modified the `service.yaml` for the pingpong app to use the `LoadBalancer` type and respond on port 80.
+
+Also, GKE provisions a persistent disk for Volume Claims automatically, this needs `storageClassName` to **NOT** be specified in the PVC (defaults to `StorageClass`). Info here: https://cloud.google.com/kubernetes-engine/docs/concepts/persistent-volumes
