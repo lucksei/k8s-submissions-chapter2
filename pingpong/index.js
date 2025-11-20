@@ -6,7 +6,11 @@ const { PingPong } = require('./utils/models')
 const app = express()
 app.use(express.json())
 
-sequelize.connectToDatabase()
+// sequelize.connectToDatabase()
+
+app.get('/', (req, res) => {
+  return res.send('Ok!')
+})
 
 app.get('/pingpong', async (req, res) => {
   await PingPong.create({});
@@ -14,9 +18,13 @@ app.get('/pingpong', async (req, res) => {
   return res.send(`pong ${pingpongCount}`);
 })
 
-app.get('/pings', (req, res) => {
-  const pingpongCount = PingPong.count({})
-  return res.send({ pings: pingpongCount });
+app.get('/pings', async (req, res) => {
+  const pingpongCount = await PingPong.count({})
+
+  console.log("RESULT:", pingpongCount);
+  console.log("TYPE:", typeof pingpongCount);
+
+  return res.send({ "pings": pingpongCount });
 })
 
 app.listen(config.port, () => {

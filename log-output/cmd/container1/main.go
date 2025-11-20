@@ -8,13 +8,46 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 )
 
-const logFilePath = "./data/pod.log"
-const pingPongUrl = "http://pingpong-svc:3000/pings"
-const informationFilePath = "./data/information.txt"
+func getEnvVar(key string, defaultValue string) string {
+	value, ok := os.LookupEnv(key)
+	if !ok {
+		return defaultValue
+	}
+	return value
+}
+
+func getEnvVarInt(key string, defaultValue int) int {
+	valueStr, ok := os.LookupEnv(key)
+	if !ok {
+		return defaultValue
+	}
+	value, err := strconv.Atoi(valueStr)
+	if err != nil {
+		panic(err)
+	}
+	return value
+}
+
+type Config struct {
+	Port                int
+	LogFilePath         string
+	PingPongUrl         string
+	InformationFilePath string
+	Message             string
+}
+
+var config = Config{
+	Port:                getEnvVarInt("PORT", 3000),
+	LogFilePath:         getEnvVar("LOG_FILE_PATH", "./data/pod.log"),
+	PingPongUrl:         getEnvVar("PINGPONG_URL", "http://pingpong-svc:80/pings"),
+	InformationFilePath: getEnvVar("INFORMATION_FILE_PATH", "./data/information.txt"),
+	Message:             getEnvVar("MESSAGE", ""),
+}
 
 // from stackoverflow
 // https://stackoverflow.com/questions/17863821/how-to-read-last-lines-from-a-big-file-with-go-every-10-secs
@@ -96,15 +129,17 @@ func getPingPongCount(url string) (int, error) {
 }
 
 func main() {
-	message, ok := os.LookupEnv("MESSAGE")
-	if !ok {
-		fmt.Printf("MESSAGE env var not found")
-		return
-	}
+	var message = config.Message
 
+	// Health check endpoint
+	http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
+		res.Write([]byte("Ok!"))
+	})
+
+	// Status endpoint
 	http.HandleFunc("/status", func(res http.ResponseWriter, req *http.Request) {
 		// Read last log line
-		lastLogLine, err := readLastLogLine(logFilePath)
+		lastLogLine, err := readLastLogLine(config.LogFilePath)
 		if err != nil {
 			fmt.Printf("Error reading last log line: %v\n", err)
 			res.WriteHeader(http.StatusInternalServerError)
@@ -113,7 +148,7 @@ func main() {
 		}
 
 		// Get ping-pong count
-		pingPongCount, err := getPingPongCount(pingPongUrl)
+		pingPongCount, err := getPingPongCount(config.PingPongUrl)
 		if err != nil {
 			fmt.Printf("Error getting ping-pong count: %v\n", err)
 			res.WriteHeader(http.StatusInternalServerError)
@@ -122,7 +157,7 @@ func main() {
 		}
 
 		// Read information file
-		information, err := stringFromFile(informationFilePath)
+		information, err := stringFromFile(config.InformationFilePath)
 		if err != nil {
 			fmt.Printf("Error reading information file: %v\n", err)
 			res.WriteHeader(http.StatusInternalServerError)
@@ -135,7 +170,6 @@ func main() {
 
 		// Log to console
 		fmt.Printf("%s: GET /status\n", time.Now().Format(time.RFC3339))
-		return
 	})
 
 	log.Fatal(http.ListenAndServe(":3000", nil))

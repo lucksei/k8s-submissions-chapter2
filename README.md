@@ -470,3 +470,63 @@ The installation sets the `kubeconfig` to point to the newly created cluster. Ch
 Modified the `service.yaml` for the pingpong app to use the `LoadBalancer` type and respond on port 80.
 
 Also, GKE provisions a persistent disk for Volume Claims automatically, this needs `storageClassName` to **NOT** be specified in the PVC (defaults to `StorageClass`). Info here: https://cloud.google.com/kubernetes-engine/docs/concepts/persistent-volumes
+
+To avoid unnecessary costs, delete the cluster when done.
+
+```sh
+gcloud container clusters delete dwk-cluster --zone=$ZONE
+```
+
+### 3.2. Back to Ingress
+
+**Pingpong app**: Changed service type back to `NodePort`.
+
+**Log Output app**: Replaced constants with environment variables defined inside the ConfigMap. and also changed the service type to `NodePort`.
+
+Created ingress exclusively for the exercises apps in the `exercises` namespace.
+
+> **IMPORTANT** Needed a health check and readiness probe for the apps to work properly under the ingress.
+
+> Also need to allow the health-checks to be accessible through the firewall.
+
+```sh
+gcloud compute firewall-rules create fw-allow-health-check \
+    --network=default \
+    --action=allow \
+    --direction=ingress \
+    --source-ranges=130.211.0.0/22,35.191.0.0/16 \
+    --target-tags=allow-health-check \
+    --rules=tcp
+```
+
+Starting a new cluster again with the `exercises` namespace.
+
+```sh
+ZONE=southamerica-east1 
+gcloud container clusters create dwk-cluster \
+  --zone=$ZONE \
+  --cluster-version=1.32 \
+  --num-nodes=1 \
+  --machine-type=e2-micro
+  --disk-size=32 \
+  --enable-autoscaling \
+  --min-nodes=1 \
+  --max-nodes=3
+
+kubectl create namespace exercises
+kubectl apply -f ./manifests/exercises-ingress.yaml
+kubectl apply -f ./pingpong/manifests
+kubectl apply -f ./log-output/manifests
+```
+
+To avoid unnecessary costs, delete the cluster when done.
+
+```sh
+gcloud container clusters delete dwk-cluster --zone=$ZONE
+```
+
+Also deleted the firewall rule (Cost should be low but just in case)
+
+```sh
+gcloud compute firewall-rules delete fw-allow-health-check
+```
