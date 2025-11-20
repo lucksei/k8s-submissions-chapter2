@@ -413,3 +413,43 @@ curl -X POST http://localhost:8081/api/todos -d "{\"todo\": \"$(seq -s ' ' 1 100
 This can be seen inside the "Explore" tab of grafana
 
 ![exerecise_2_10](img/20251118-00-exercise_2_10.png)
+
+### 3.1. Pingpong GKE
+
+
+Installed gcloud sdk from here https://docs.cloud.google.com/sdk/docs/install. Log in with
+
+```sh
+gcloud auth login
+...
+```
+Setting the project with my id
+
+```sh
+gcloud config set project dwk-gke-478711
+```
+
+Created cluster inside gke
+
+```sh
+# Optimized cluster w auto scaling
+# Some zones: us-west1 (Oregon), southamerica-east1 (Sao Paulo), southamerica-west1 (Santiago) 
+ZONE=southamerica-east1 
+gcloud container clusters create dwk-cluster \
+  --zone=$ZONE \
+  --cluster-version=1.32 \
+  --num-nodes=1 \
+  --machine-type=e2-micro
+  --disk-size=32 \
+  --enable-autoscaling \
+  --min-nodes=1 \
+  --max-nodes=3
+```
+
+> The previous command will fail if Kubernetes Engine API has not been used in the project, to enable run
+
+```sh
+gcloud services enable container.googleapis.com
+```
+
+The installation sets the `kubeconfig` to point to the newly created cluster. Check with `kubectl cluster-info`

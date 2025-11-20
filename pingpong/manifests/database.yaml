@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: pingpong-postgres
+  namespace: exercises
 spec:
   selector:
     matchLabels:

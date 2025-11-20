@@ -2,6 +2,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: todo-app-cronjob
+  namespace: project
 spec:
   schedule: '0 * * * *'
   jobTemplate:
