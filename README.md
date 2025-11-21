@@ -32,6 +32,7 @@ The repository contains **all chapters** from the course, not just the ones from
 - Chapter 4 - To the Cloud
   - [3.1. Pingpong GKE](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.1/pingpong)
   - [3.2. Back to Ingress](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.2)
+  - [3.3. To the Gateway](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.3)
 
 ### 3.1. Pingpong GKE
 
@@ -531,3 +532,7 @@ Also deleted the firewall rule (Cost should be low but just in case)
 ```sh
 gcloud compute firewall-rules delete fw-allow-health-check
 ```
+
+### 3.3. To the Gateway
+
+Created resources Gateway and HTTPRoute to route the exercises apps just like the ingress.
