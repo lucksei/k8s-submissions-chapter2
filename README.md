@@ -32,7 +32,7 @@ The repository contains **all chapters** from the course, not just the ones from
 - Chapter 4 - To the Cloud
   - [3.1. Pingpong GKE](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.1/pingpong)
   - [3.2. Back to Ingress](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.2)
-  - [3.3. To the Gateway](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.3)
+  - [3.3. To the Gateway](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.3/exercises)
 
 ### 3.1. Pingpong GKE
 
