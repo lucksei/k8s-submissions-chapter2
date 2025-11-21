@@ -536,3 +536,27 @@ gcloud compute firewall-rules delete fw-allow-health-check
 ### 3.3. To the Gateway
 
 Created resources Gateway and HTTPRoute to route the exercises apps just like the ingress.
+
+Create the cluster again
+
+```sh
+REGION=southamerica-east1-a
+gcloud container clusters create dwk-cluster \
+  --cluster-version=1.32 \
+  --location=$REGION \
+  --num-nodes=1 \
+  --machine-type=e2-micro \
+  --disk-size=32 \
+  --enable-autoscaling \
+  --min-nodes=1 \
+  --max-nodes=3 \
+  --gateway-api=standard
+```
+
+Or if the cluster exists, update it
+
+```sh
+gcloud container clusters update dwk-cluster \
+  --location=$REGION \
+  --gateway-api=standard
+```
