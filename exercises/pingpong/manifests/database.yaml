@@ -15,7 +15,7 @@ spec:
         app: pingpong-postgres
     spec:
       containers:
-        - image: postgres:latest
+        - image: postgres:15.15-alpine3.22
           name: pingpong-postgres
           ports:
             - containerPort: 5432

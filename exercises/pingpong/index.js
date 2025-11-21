@@ -6,7 +6,7 @@ const { PingPong } = require('./utils/models')
 const app = express()
 app.use(express.json())
 
-// sequelize.connectToDatabase()
+sequelize.connectToDatabase()
 
 app.get('/', (req, res) => {
   return res.send('Ok!')

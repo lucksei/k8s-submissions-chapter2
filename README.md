@@ -509,7 +509,7 @@ gcloud container clusters create dwk-cluster \
   --zone=$ZONE \
   --cluster-version=1.32 \
   --num-nodes=1 \
-  --machine-type=e2-micro
+  --machine-type=e2-micro \
   --disk-size=32 \
   --enable-autoscaling \
   --min-nodes=1 \
@@ -537,9 +537,12 @@ gcloud compute firewall-rules delete fw-allow-health-check
 
 Created resources Gateway and HTTPRoute to route the exercises apps just like the ingress.
 
+> Side note: Updated postgres to use a lighter image `15.15-alpine3.22` and changed the dir structure a bit.
+
 Create the cluster again
 
 ```sh
+# W/ autoscaling (slow as far as I tested it)
 REGION=southamerica-east1-a
 gcloud container clusters create dwk-cluster \
   --cluster-version=1.32 \
@@ -551,12 +554,39 @@ gcloud container clusters create dwk-cluster \
   --min-nodes=1 \
   --max-nodes=3 \
   --gateway-api=standard
+
+# Slightly faster cluster i think (this is the one i used for the exercise)
+REGION=southamerica-east1-a
+gcloud container clusters create dwk-cluster \
+  --cluster-version=1.32 \
+  --location=$REGION \
+  --num-nodes=3 \
+  --machine-type=e2-micro \
+  --disk-size=32 \
+  --gateway-api=standard
 ```
 
 Or if the cluster exists, update it
 
 ```sh
+REGION=southamerica-east1-a
 gcloud container clusters update dwk-cluster \
   --location=$REGION \
   --gateway-api=standard
+```
+
+Applying the manifests
+
+```sh
+kubectl create namepsace exercises
+kubectl apply -f ./exercises/log-output/manifests
+kubectl apply -f ./exercises/pingpong/manifests
+kubectl apply -f ./exercises/manifests
+```
+
+(Optional) To avoid unnecessary costs, delete the cluster when done.
+
+```sh
+REGION=southamerica-east1-a
+gcloud container clusters delete dwk-cluster --location=$REGION
 ```
