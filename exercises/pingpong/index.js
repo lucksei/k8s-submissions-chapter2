@@ -8,11 +8,11 @@ app.use(express.json())
 
 sequelize.connectToDatabase()
 
-app.get('/', (req, res) => {
+app.get('/health', (req, res) => {
   return res.send('Ok!')
 })
 
-app.get('/pingpong', async (req, res) => {
+app.get('/', async (req, res) => {
   await PingPong.create({});
   const pingpongCount = await PingPong.count({})
   return res.send(`pong ${pingpongCount}`);

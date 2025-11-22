@@ -4,7 +4,7 @@ metadata:
   name: exercises-gateway
   namespace: exercises
 spec:
-  gatewayClassName: gke-l7-gxlb # Or gke-l7-global-external-managed
+  gatewayClassName: gke-l7-global-external-managed
   listeners:
     - name: http
       protocol: HTTP
@@ -27,6 +27,12 @@ spec:
       - path:
           type: PathPrefix
           value: /pingpong
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: pingpong-svc
           port: 80

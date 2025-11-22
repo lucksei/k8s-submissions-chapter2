@@ -33,6 +33,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [3.1. Pingpong GKE](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.1/pingpong)
   - [3.2. Back to Ingress](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.2)
   - [3.3. To the Gateway](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.3/exercises)
+  - [3.4. Rewritten routing](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.4/exercises)
 
 ### 3.1. Pingpong GKE
 
@@ -590,3 +591,22 @@ kubectl apply -f ./exercises/manifests
 REGION=southamerica-east1-a
 gcloud container clusters delete dwk-cluster --location=$REGION
 ```
+
+### 3.4. Rewritten routing
+
+The HTTPRoute resource for the pingpong app now has route rewriting from `/pingpong` to `/`. Also changed the paths in the app to accomodate this change:
+- `/pingpong` -> `/`
+- `/` -> `/health`
+
+> Important note: Do **NOT** use the `gke-l7-gxlb` gatewayClassName, it does not support route filters like `ReplacePrefixMatch`. Instead use the `gke-l7-global-external-managed` which seems to be a more modern one. Took me a while to figure this out ;_;. 
+
+```
+Events:
+  Type     Reason  Age                  From                   Message
+  ----     ------  ----                 ----                   -------
+  Normal   SYNC    17m (x27 over 83m)   sc-gateway-controller  exercises/exercises-gateway
+  Normal   SYNC    13m (x27 over 80m)   sc-gateway-controller  SYNC on exercises/exercises-gateway was a success
+  Warning  SYNC    2m44s (x4 over 11m)  sc-gateway-controller  failed to translate Gateway "exercises/exercises-gateway": Error GWCER104: HTTPRoute "exercises/pingpong-route" is misconfigured, err: classic GXLB (GatewayClass gke-l7-gxlb) does not support rule filters, GFEv3 based External LB (GatewayClass gke-l7-global-external-managed) supports rule filters.
+```
+
+> Semi important note: You need to delete the old Gateway and apply the new one again. This process took me up to 10m until the project was functional again, as GKE needs to create the Gateway and health checks on the background.
