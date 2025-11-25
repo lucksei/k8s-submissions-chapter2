@@ -34,6 +34,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [3.2. Back to Ingress](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.2)
   - [3.3. To the Gateway](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.3/exercises)
   - [3.4. Rewritten routing](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.4/exercises)
+  - [3.5. The project, step 14](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.5/project)
 
 ### 3.1. Pingpong GKE
 
