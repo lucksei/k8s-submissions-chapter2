@@ -1,5 +1,5 @@
 const config = {
-  baseUrl: import.meta.env.VITE_API_URL || 'http://localhost:3001',
+  baseUrl: import.meta.env.VITE_API_URL || '',
   hourlyImageUrl: import.meta.env.VITE_HOURLY_IMAGE_URL || 'hourly.jpg',
 };
 

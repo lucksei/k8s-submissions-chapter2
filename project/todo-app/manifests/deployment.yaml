@@ -29,8 +29,6 @@ spec:
               mountPath: /usr/src/data
           resources: {}
           envFrom:
-            - secretRef:
-                name: todo-app-secret
             - configMapRef:
                 name: todo-app-cm
 status: {}

@@ -17,6 +17,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 
+app.get('/', (req, res) => {
+  return res.status(200).send('Ok!');
+})
 
 app.get('/api', (req, res) => {
   return res.status(200).send('Hello from the backend!');

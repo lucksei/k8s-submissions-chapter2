@@ -13,9 +13,26 @@ spec:
         app: todo-backend
     spec:
       containers:
-        - image: lucksei/todo-backend:latest
+        - name: todo-backend
+          image: lucksei/todo-backend:latest
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /api
+              port: 3000
+            initialDelaySeconds: 45
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /api
+              port: 3000
+            initialDelaySeconds: 45
+            periodSeconds: 10
+            timeoutSeconds: 5
           imagePullPolicy: Always
-          name: todo-backend
           resources: {}
           envFrom:
             - configMapRef:

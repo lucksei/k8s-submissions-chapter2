@@ -344,6 +344,14 @@ sops --encrypt \
      secrets.yaml > secrets.enc.yaml
 ```
 
+to decrypt
+
+```sh
+export SOPS_AGE_KEY=$(awk '/AGE-SECRET-KEY-/' key.txt)
+cd project/todo-backend/manifests
+sops --decrypt secrets.enc.yaml > secrets.yaml
+```
+
 ### 2.9 The project, step 12
 
 Created a new CronJob resource that pushes a new todo every minute to remind you to read a random wikipedia article. Also reordered the app structure inside a new root directory `todo-project`.
@@ -613,4 +621,27 @@ Events:
 
 ### 3.5. The project, step 14
 
-Updating the project to deploy it into GKE with the Gateway API.
+Updating the project to deploy it into GKE with the Gateway API. Also added the `kustomization.yaml` file that can be applied with:
+
+```sh
+kubectl create namespace project
+kubectl apply -k .
+```
+
+Again, so i don't forget:
+
+```sh
+REGION=southamerica-east1-a
+gcloud container clusters create dwk-cluster \
+  --cluster-version=1.32 \
+  --location=$REGION \
+  --num-nodes=3 \
+  --machine-type=e2-micro \
+  --disk-size=32 \
+  --gateway-api=standard
+```
+
+```sh
+REGION=southamerica-east1-a
+gcloud container clusters delete dwk-cluster --location=$REGION
+```

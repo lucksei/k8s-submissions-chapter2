@@ -15,7 +15,7 @@ spec:
         app: todo-backend-postgres
     spec:
       containers:
-        - image: postgres:latest
+        - image: postgres:15.15-alpine3.22
           name: todo-backend-postgres
           ports:
             - containerPort: 5432
@@ -26,11 +26,20 @@ spec:
               mountPath: /var/lib/postgresql
           env:
             - name: POSTGRES_PASSWORD
-              value: todo
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_PASSWORD
+                  name: todo-backend-secret
             - name: POSTGRES_USER
-              value: todo
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_USER
+                  name: todo-backend-secret
             - name: POSTGRES_DB
-              value: todo
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_DB
+                  name: todo-backend-secret
   volumeClaimTemplates:
     - metadata:
         name: todo-backend-postgres-data
@@ -44,6 +53,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: todo-backend-postgres-svc
+  namespace: project
 spec:
   selector:
     app: todo-backend-postgres

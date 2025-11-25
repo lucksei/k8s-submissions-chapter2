@@ -3,7 +3,13 @@
 push image to docker.io registry
 
 ```sh
-docker build -t lucksei/todo-backend . && docker push lucksei/todo-backend:latest
+docker build --no-cache -t lucksei/todo-backend . && docker push lucksei/todo-backend:latest
+```
+
+Force update image (GKE can be stubborn)
+```sh
+DIGEST=$(docker inspect lucksei/todo-backend:latest --format='{{index .RepoDigests 0}}')
+kubectl set image deployment/todo-backend todo-backend=${DIGEST} -n project
 ```
 
 Test deployment manually

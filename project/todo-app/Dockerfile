@@ -6,7 +6,8 @@ COPY frontend/package*.json ./
 
 RUN npm ci
 
-ARG VITE_API_URL=http://localhost:8081
+# ARG VITE_API_URL=http://localhost:8081
+ARG VITE_API_URL=''
 ARG VITE_HOURLY_IMAGE_URL='hourly.jpg'
 
 COPY frontend/ .
