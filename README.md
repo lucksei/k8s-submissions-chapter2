@@ -610,3 +610,7 @@ Events:
 ```
 
 > Semi important note: You need to delete the old Gateway and apply the new one again. This process took me up to 10m until the project was functional again, as GKE needs to create the Gateway and health checks on the background.
+
+### 3.5. The project, step 14
+
+Updating the project to deploy it into GKE with the Gateway API.

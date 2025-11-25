@@ -17,15 +17,15 @@ spec:
         app: todo-app
     spec:
       volumes:
-        - name: my-local-pvc
+        - name: todo-app-pv
           persistentVolumeClaim:
-            claimName: my-local-pvc
+            claimName: todo-app-pvc
       containers:
         - image: lucksei/todo-app:latest
           imagePullPolicy: Always
           name: todo-app
           volumeMounts:
-            - name: my-local-pvc
+            - name: todo-app-pv
               mountPath: /usr/src/data
           resources: {}
           envFrom:
