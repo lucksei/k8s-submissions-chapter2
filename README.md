@@ -646,3 +646,66 @@ gcloud container clusters create dwk-cluster \
 REGION=southamerica-east1-a
 gcloud container clusters delete dwk-cluster --location=$REGION
 ```
+
+### 
+
+New github action workflow
+Create a new service account: https://docs.cloud.google.com/iam/docs/keys-create-delete
+
+IAM Roles for the Service Account
+- Kubernetes Engine Service Agent
+- Storage Admin
+- Artifact Registry Administrator
+- Artifact Registry Create-on-Push Repository Administrator
+
+> Console menu: https://console.cloud.google.com/iam-admin/iam?project=dwk-gke-478711
+
+**Mini gcloud cheatsheet**:
+
+Create new service account
+
+```sh
+gcloud iam service-accounts create dwk-gke-sa \
+  --display-name="Dwk GKE Service Account" \
+  --description="Dwk GKE Service Account" \
+  --project=dwk-gke-478711
+```
+
+List the service accounts (should appear a new one)
+
+```sh
+gcloud iam service-accounts list
+```
+
+Assign the roles
+
+```sh
+gcloud projects add-iam-policy-binding dwk-gke-478711 \
+  --member="serviceAccount:dwk-gke-sa@dwk-gke-478711.iam.gserviceaccount.com" \
+  --role="roles/container.serviceAgent"
+
+gcloud projects add-iam-policy-binding dwk-gke-478711 \
+  --member="serviceAccount:dwk-gke-sa@dwk-gke-478711.iam.gserviceaccount.com" \
+  --role="roles/storage.admin"
+
+gcloud projects add-iam-policy-binding dwk-gke-478711 \
+  --member="serviceAccount:dwk-gke-sa@dwk-gke-478711.iam.gserviceaccount.com" \
+  --role="roles/artifactregistry.admin"
+
+gcloud projects add-iam-policy-binding dwk-gke-478711 \
+  --member="serviceAccount:dwk-gke-sa@dwk-gke-478711.iam.gserviceaccount.com" \
+  --role="roles/artifactregistry.createOnPushRepoAdmin"
+```
+
+Quickly check the roles
+
+```sh
+gcloud projects get-iam-policy dwk-gke-478711 \
+  --filter="bindings.members:dwk-gke-sa@dwk-gke-478711.iam.gserviceaccount.com"
+```
+
+Create the service account key with gcloud (added to .gitignore)
+
+```sh
+gcloud iam service-accounts keys create ./private-key.json --iam-account dwk-gke-sa@dwk-gke-478711.iam.gserviceaccount.com
+```
