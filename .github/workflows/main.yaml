@@ -27,6 +27,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Debug secret
+        run: |
+          echo "Secret length: ${#GCP_SA_KEY}"
+          # This will show if the secret is empty
+
       - uses: 'google-github-actions/auth@v3'
         with:
           credentials_json: '${{ secrets.GCP_SA_KEY }}' # https://docs.cloud.google.com/iam/docs/keys-create-delete
