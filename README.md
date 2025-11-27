@@ -647,9 +647,10 @@ REGION=southamerica-east1-a
 gcloud container clusters delete dwk-cluster --location=$REGION
 ```
 
-### 
+### 3.6.
 
 New github action workflow
+
 Create a new service account: https://docs.cloud.google.com/iam/docs/keys-create-delete
 
 IAM Roles for the Service Account
@@ -660,7 +661,7 @@ IAM Roles for the Service Account
 
 > Console menu: https://console.cloud.google.com/iam-admin/iam?project=dwk-gke-478711
 
-**Mini gcloud cheatsheet**:
+#### Google Cloud IAM Cheatsheet
 
 Create new service account
 
@@ -709,3 +710,55 @@ Create the service account key with gcloud (added to .gitignore)
 ```sh
 gcloud iam service-accounts keys create ./private-key.json --iam-account dwk-gke-sa@dwk-gke-478711.iam.gserviceaccount.com
 ```
+
+#### Artifact Registry Configuration
+
+Now we enable "Artifact Registry" (Container Registry seems to be deprecated now)
+
+https://docs.cloud.google.com/artifact-registry/docs
+https://docs.cloud.google.com/artifact-registry/docs/docker/store-docker-container-images
+
+```sh
+gcloud services enable artifactregistry.googleapis.com
+```
+
+Create a new repository in Artifact Registry
+
+```sh
+ZONE=southamerica-east1
+PROJECT_ID=dwk-gke-478711
+gcloud artifacts repositories create dwk-repo \
+  --repository-format=docker \
+  --location=$ZONE \
+  --description="Dwk GKE Service Account" \
+  --project=$PROJECT_ID
+```
+
+To verify
+
+```sh
+gcloud artifacts repositories list \
+  --project=$PROJECT_ID
+```
+
+Configure docker to use the new Artifact Registry
+
+```sh
+gcloud auth configure-docker $ZONE-docker.pkg.dev
+```
+
+To send the image to Artifact Registry we need to tag it. 
+
+The tag will look something like this for my specific case but will vary
+
+```sh
+southamerica-east1-docker.pkg.dev/dwk-gke-478711/dwk-repo/<image>:<version>
+|===============================| |============| |======| |===============|
+            Host name               Project ID  Repository      Image
+```
+
+- `southamerica-east1-docker.pkg.dev` is the host name of the container where the image will be stored.
+- `dwk-gke-478711` is the project ID.
+- `dwk-repo` is the repository.
+- `<image>:<version>` is the name of the image with his tag, if not specified it will be tagged `latest`.
+

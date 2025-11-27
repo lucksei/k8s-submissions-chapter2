@@ -1,7 +1,11 @@
 name: Release application
 
 on:
-  push:
+  workflow_dispatch:
+    inputs:
+  
+  # NOTE: Uncomment the following lines to enable automatic deployment on push to main branch
+  # push:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
@@ -34,4 +38,13 @@ jobs:
 
       - name: 'Use gcloud CLI'
         run: 'gcloud info'
+
+      - name: 'Get GKE credentials'
+        uses: 'google-github-actions/get-gke-credentials@v3'
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          location: ${{ env.GKE_ZONE }}
+          project_id: ${{ env.PROJECT_ID }}
  
+      - name: 'Form the image tag'
+        run: echo "IMAGE_TAG=${{ env.GKE_ZONE }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/todo-app:$BRANCH-$GITHUB_SHA"
