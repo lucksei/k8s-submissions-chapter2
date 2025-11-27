@@ -11,10 +11,10 @@ env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   GKE_CLUSTER: dwk-cluster
   GKE_ZONE: southamerica-east1 # São Paulo
-  REGISTRY: southamerica-east1 # https://cloud.google.com/artifact-registry/docs/repositories/repo-locations
-  REPOSITORY: lucksei/k8s-submissions-chapter2
-  IMAGE: dwk-environments
-  SERVICE: dwk-environments
+  REGISTRY: southamerica-east1-docker.pkg.dev # https://cloud.google.com/artifact-registry/docs/repositories/repo-locations
+  REPOSITORY: dwk-repo
+  IMAGE: dwk-environments # TODO: change
+  SERVICE: dwk-environments # TODO: change
   BRANCH: ${{ github.ref_name }}
 
 jobs:
