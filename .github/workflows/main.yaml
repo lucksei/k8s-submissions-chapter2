@@ -1,11 +1,11 @@
 name: Release application
 
 on:
-  workflow_dispatch:
-    inputs:
+  # workflow_dispatch:
+  #   inputs:
   
   # NOTE: Uncomment the following lines to enable automatic deployment on push to main branch
-  # push:
+  push:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
