@@ -649,7 +649,7 @@ gcloud container clusters delete dwk-cluster --location=$REGION
 
 ### 3.6. The project, step 15
 
-New github action workflow
+New github action workflow, pretty long exercise, explanations below
 
 Create a new service account: https://docs.cloud.google.com/iam/docs/keys-create-delete
 
@@ -744,7 +744,7 @@ gcloud artifacts repositories list \
   --project=$PROJECT_ID
 ```
 
-Configure docker to use the new Artifact Registry
+Configure docker to use the new Artifact Registry (This step is done in GitHub Action, you dont have to do it manually)
 
 ```sh
 gcloud auth configure-docker $ZONE-docker.pkg.dev
@@ -765,3 +765,13 @@ southamerica-east1-docker.pkg.dev/dwk-gke-478711/dwk-repo/<image>:<version>
 - `dwk-repo` is the repository.
 - `<image>:<version>` is the name of the image with his tag, if not specified it will be tagged `latest`.
 
+```sh
+REGION=southamerica-east1-a
+gcloud container clusters create dwk-cluster \
+  --cluster-version=1.32 \
+  --location=$REGION \
+  --num-nodes=3 \
+  --machine-type=e2-micro \
+  --disk-size=32 \
+  --gateway-api=standard
+kubectl namespace create project

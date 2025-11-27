@@ -5,6 +5,7 @@ namespace: project
 
 resources:
   # Project Level
+  - ./manifests/namespace.yaml
   - ./manifests/configMap.yaml
   - ./manifests/cronJob.yaml
   - ./manifests/gateway.yaml
