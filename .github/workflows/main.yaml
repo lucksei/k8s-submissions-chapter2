@@ -10,7 +10,7 @@ on:
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   GKE_CLUSTER: dwk-cluster
-  GKE_ZONE: southamerica-east1 # São Paulo
+  GKE_ZONE: southamerica-east1-a # São Paulo  
   REGISTRY: southamerica-east1-docker.pkg.dev # https://cloud.google.com/artifact-registry/docs/repositories/repo-locations
   REPOSITORY: dwk-repo
   IMAGE: dwk-environments # TODO: change
@@ -44,12 +44,13 @@ jobs:
       - name: 'Use gcloud CLI'
         run: 'gcloud info'
 
-      - name: 'Get GKE credentials'
-        uses: 'google-github-actions/get-gke-credentials@v3'
-        with:
-          cluster_name: ${{ env.GKE_CLUSTER }}
-          location: ${{ env.GKE_ZONE }}
-          project_id: ${{ env.PROJECT_ID }}
+      # NOTE: Uncomment the following lines to get GKE credentials later
+      # - name: 'Get GKE credentials'
+      #   uses: 'google-github-actions/get-gke-credentials@v3'
+      #   with:
+      #     cluster_name: ${{ env.GKE_CLUSTER }}
+      #     location: ${{ env.GKE_ZONE }}
+      #     project_id: ${{ env.PROJECT_ID }}
  
       - name: 'Form the image tag'
-        run: echo "IMAGE_TAG=${{ env.GKE_ZONE }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/todo-app:$BRANCH-$GITHUB_SHA"
+        run: echo "IMAGE_TAG=${{ env.REGISTRY }}/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/todo-app:$BRANCH-$GITHUB_SHA"
