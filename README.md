@@ -647,7 +647,7 @@ REGION=southamerica-east1-a
 gcloud container clusters delete dwk-cluster --location=$REGION
 ```
 
-### 3.6.
+### 3.6. The project, step 15
 
 New github action workflow
 
@@ -662,6 +662,9 @@ IAM Roles for the Service Account
 > Console menu: https://console.cloud.google.com/iam-admin/iam?project=dwk-gke-478711
 
 #### Google Cloud IAM Cheatsheet
+
+> List of available Google actions: https://github.com/google-github-actions
+> Create a new service account key: https://docs.cloud.google.com/iam/docs/keys-create-delete
 
 Create new service account
 

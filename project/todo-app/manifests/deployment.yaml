@@ -10,7 +10,8 @@ spec:
   selector:
     matchLabels:
       app: todo-app
-  strategy: {}
+  strategy: 
+    type: Recreate # Fix for Persistent Volume Claim issues in GKE
   template:
     metadata:
       labels:
