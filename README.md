@@ -35,6 +35,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [3.3. To the Gateway](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.3/exercises)
   - [3.4. Rewritten routing](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.4/exercises)
   - [3.5. The project, step 14](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.5/project)
+  - [3.6. The project, step 15](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.6/project)
 
 ### 3.1. Pingpong GKE
 
@@ -649,7 +650,7 @@ gcloud container clusters delete dwk-cluster --location=$REGION
 
 ### 3.6. The project, step 15
 
-New github action workflow, pretty long exercise, explanations below
+> New github action workflow, pretty long exercise, explanations below
 
 Create a new service account: https://docs.cloud.google.com/iam/docs/keys-create-delete
 
@@ -664,7 +665,6 @@ IAM Roles for the Service Account
 #### Google Cloud IAM Cheatsheet
 
 > List of available Google actions: https://github.com/google-github-actions
-> Create a new service account key: https://docs.cloud.google.com/iam/docs/keys-create-delete
 
 Create new service account
 
@@ -710,13 +710,15 @@ gcloud projects get-iam-policy dwk-gke-478711 \
 
 Create the service account key with gcloud (added to .gitignore)
 
+> Create a new service account key documentation: https://docs.cloud.google.com/iam/docs/keys-create-delete
+
 ```sh
 gcloud iam service-accounts keys create ./private-key.json --iam-account dwk-gke-sa@dwk-gke-478711.iam.gserviceaccount.com
 ```
 
 #### Artifact Registry Configuration
 
-Now we enable "Artifact Registry" (Container Registry seems to be deprecated now)
+Now we enable "Artifact Registry" _(Container Registry seems to be deprecated now)_
 
 https://docs.cloud.google.com/artifact-registry/docs
 https://docs.cloud.google.com/artifact-registry/docs/docker/store-docker-container-images
