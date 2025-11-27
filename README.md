@@ -765,13 +765,29 @@ southamerica-east1-docker.pkg.dev/dwk-gke-478711/dwk-repo/<image>:<version>
 - `dwk-repo` is the repository.
 - `<image>:<version>` is the name of the image with his tag, if not specified it will be tagged `latest`.
 
+#### Finally create the cluster if not already created
+
 ```sh
-REGION=southamerica-east1-a
+ZONE=southamerica-east1-a
 gcloud container clusters create dwk-cluster \
   --cluster-version=1.32 \
-  --location=$REGION \
+  --location=$ZONE \
   --num-nodes=3 \
   --machine-type=e2-micro \
   --disk-size=32 \
   --gateway-api=standard
 kubectl namespace create project
+```
+
+Delete the cluster if needed
+
+```sh
+ZONE=southamerica-east1-a
+gcloud container clusters delete dwk-cluster --location=$REGION
+```
+
+Delete the Artifact Registry if needed
+ZONE=southamerica-east1-a
+```sh
+gcloud artifacts repositories delete dwk-repo --location=$ZONE
+```

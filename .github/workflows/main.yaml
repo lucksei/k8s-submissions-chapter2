@@ -1,7 +1,11 @@
 name: Release application
 
 on:
-  push:
+  workflow_dispatch:
+
+  # push:
+  #   branches:
+  #     - main
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
