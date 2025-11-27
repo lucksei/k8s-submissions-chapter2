@@ -785,11 +785,11 @@ Delete the cluster if needed
 
 ```sh
 ZONE=southamerica-east1-a
-gcloud container clusters delete dwk-cluster --location=$REGION
+gcloud container clusters delete dwk-cluster --location=$ZONE
 ```
 
 Delete the Artifact Registry if needed
-ZONE=southamerica-east1-a
 ```sh
+ZONE=southamerica-east1
 gcloud artifacts repositories delete dwk-repo --location=$ZONE
 ```
