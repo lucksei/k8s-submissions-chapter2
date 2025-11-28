@@ -769,16 +769,19 @@ southamerica-east1-docker.pkg.dev/dwk-gke-478711/dwk-repo/<image>:<version>
 
 #### Finally create the cluster if not already created
 
+Changed machine type to deploy a bit faster and changed node provisioning model to **Spot VMs**
+
 ```sh
 ZONE=southamerica-east1-a
 gcloud container clusters create dwk-cluster \
   --cluster-version=1.32 \
   --location=$ZONE \
   --num-nodes=3 \
-  --machine-type=e2-micro \
+  --machine-type=e2-medium \
+  --spot \
   --disk-size=32 \
   --gateway-api=standard
-kubectl namespace create project
+kubectl create namespace project
 ```
 
 Delete the cluster if needed

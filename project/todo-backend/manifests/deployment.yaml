@@ -20,16 +20,16 @@ spec:
               protocol: TCP
           readinessProbe:
             httpGet:
-              path: /api
+              path: /
               port: 3000
             initialDelaySeconds: 45
             periodSeconds: 10
             timeoutSeconds: 5
           livenessProbe:
             httpGet:
-              path: /api
+              path: /
               port: 3000
-            initialDelaySeconds: 45
+            initialDelaySeconds: 60
             periodSeconds: 10
             timeoutSeconds: 5
           imagePullPolicy: Always
