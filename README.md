@@ -36,6 +36,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [3.4. Rewritten routing](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.4/exercises)
   - [3.5. The project, step 14](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.5/project)
   - [3.6. The project, step 15](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.6/project)
+  - [3.7. The project, step 16](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.7/project)
 
 ### 3.1. Pingpong GKE
 
@@ -796,3 +797,7 @@ Delete the Artifact Registry if needed
 ZONE=southamerica-east1
 gcloud artifacts repositories delete dwk-repo --location=$ZONE
 ```
+
+### 3.7. The project, step 16
+
+Modified the workflow to create a namespace for the branch that is being deployed.
