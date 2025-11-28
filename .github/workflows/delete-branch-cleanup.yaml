@@ -47,6 +47,11 @@ jobs:
       
       - name: Delete namespace
         run: |
+          # Get the branch name from the delete event
+          BRANCH="${{ github.event.ref }}"
+          # Remove 'refs/heads/' prefix if present
+          BRANCH="${BRANCH#refs/heads/}"
+
           # Determine namespace based on branch
           if [ "$BRANCH" = "main" ]; then 
             NAMESPACE="project";
