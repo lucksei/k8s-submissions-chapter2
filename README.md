@@ -37,6 +37,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [3.5. The project, step 14](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.5/project)
   - [3.6. The project, step 15](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.6/project)
   - [3.7. The project, step 16](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.7/project)
+  - [3.8. The project, step 17](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.8/project)
 
 ### 3.1. Pingpong GKE
 
@@ -801,3 +802,7 @@ gcloud artifacts repositories delete dwk-repo --location=$ZONE
 ### 3.7. The project, step 16
 
 Modified the workflow to create a namespace for the branch that is being deployed.
+
+### 3.8. The project, step 17
+
+Added new workflow to delete the namespace when the branch is deleted.
