@@ -806,3 +806,148 @@ Modified the workflow to create a namespace for the branch that is being deploye
 ### 3.8. The project, step 17
 
 Added new workflow to delete the namespace when the branch is deleted.
+
+### 3.9. DBaaS vs DIY
+
+Things to consider for the comparison:
+
+- Required costs for the DBaaS/DIY solution.
+- Required maintainance for the DBaaS/DIY solution in the long run.
+- Required work/effort for the initial setup of the DBaaS/DIY solution.
+
+#### Costs
+
+Using the pricing calculator: https://cloud.google.com/products/calculator:
+
+**DBaaS**:
+
+- southamerica-east1 
+- enterprise (standard)
+- General purpose db-f1-micro
+- 1GB SSD
+- no HA (High availability)
+
+Estimated cost is $11.79 per month.
+
+**DIY**:
+
+- southamerica-east1-a
+- e2-medium (spot VMs)
+- 3 nodes
+- 32GB disk
+- 1GB SSD Persistent Volume Claim for the DB
+
+Estimated cost is $105.18 per month.
+
+> Note that this includes the rest of the deployment (cluster, Artifact Registry, etc) which are not included in the DBaaS solution. so its not a direct comparison but useful to understand the differences, the costs of running the DIY solution are probably a lot cheaper than the ones calculated here, but probably a tiny bit higher than the DBaaS. 
+
+#### Maintenance
+
+**DBaaS**:
+
+Cloud SQL (https://cloud.google.com/sql/docs) offers the following capabilities out of the box:
+- Backups
+- High availability and failover
+- Network connectivity
+- Export and import capabilities
+- Maintenance and updates
+- Monitoring
+- Logging
+
+**DIY**:
+
+You need to care of the DB maintenance yourself. You have full control over how you decide to manage the DB but this can be a lot more complex, time consuming and error prone than using a DBaaS.
+
+#### Required work
+
+**DBaaS**:
+
+First enable the Cloud SQL API
+
+```sh
+gcloud services enable sqladmin.googleapis.com
+```
+
+To create a Cloud SQL Postgres 15 instance with ID `todo-backend-postgres` that has 2 CPUs, 8Gib of RAM, and is in the zone `southamerica-east1`, where the 'postgres' user has its password set to `todo`, run:
+
+```sh
+gcloud sql instances create todo-backend-postgres \
+  --zone=southamerica-east1-a \
+  --database-version=POSTGRES_15 \
+  --cpu=2 \
+  --memory=8GiB \
+  --storage-size=10GiB \
+  --storage-type=HDD \
+  --root-password=todo
+```
+
+An even cheaper (General purpose - Shared Core) instance can be created with the following command:
+
+```sh
+gcloud sql instances create todo-backend-postgres \
+  --zone=southamerica-east1-a \
+  --database-version=POSTGRES_15 \
+  --tier=db-f1-micro \
+  --storage-size=10GiB \
+  --storage-type=HDD \
+  --root-password=todo
+```
+
+To delete the instance run:
+
+```sh
+gcloud sql instances delete todo-backend-postgres 
+```
+
+To connect the Cloud SQL instance to GKE, It's not as simple as the DYI solution. One way we can do this is with the Cloud SQL Proxy solution, which requires us to add the tool using the sidecar container pattern. We can check the documentation [here](https://docs.cloud.google.com/sql/docs/mysql/connect-kubernetes-engine).
+
+Created new IAM Service Account
+
+```sh
+gcloud iam service-accounts create dwk-cloudsql-sa \
+  --display-name="Dwk Cloud SQL Service Account" \
+  --description="DevOps with Kubernetes Cloud SQL Service Account" \
+  --project=dwk-gke-478711
+```
+
+```sh
+gcloud iam service-accounts list
+```
+
+Assign the role (Cloud SQL Client IAM role)
+
+```sh
+gcloud projects add-iam-policy-binding dwk-gke-478711 \
+  --member="serviceAccount:dwk-cloudsql-sa@dwk-gke-478711.iam.gserviceaccount.com" \
+  --role="roles/cloudsql.client"
+```
+
+Quickly check the roles
+
+```sh
+gcloud projects get-iam-policy dwk-gke-478711 \
+  --filter="bindings.members:dwk-cloudsql-sa@dwk-gke-478711.iam.gserviceaccount.com"
+```
+
+Create the service account key with gcloud (added to .gitignore)
+
+> Create a new service account key documentation: https://docs.cloud.google.com/iam/docs/keys-create-delete
+
+```sh
+gcloud iam service-accounts keys create ./cloudsql-private-key.json --iam-account dwk-cloudsql-sa@dwk-gke-478711.iam.gserviceaccount.com
+```
+
+It's recommended to use a Workload Identity instead, but for simplicity the key will suffice. We can create a secret containing the key manually with the following command:
+
+```sh
+kubectl create secret generic cloudsql-credentials \
+  --from-file=cloudsql-private-key.json=./cloudsql-private-key.json \
+```
+
+
+Encode with `echo -n '...' | base64`
+
+
+**DIY**:
+
+- Requires at least one `StatefulSet` resource with a `VolumeClaimTemplate` for the DB storage and a `Service` for the DB connection. As for configuration it depends on the database used, but for Postgres you can pretty much have it running with `POSTGRES_PASSWORD`, `POSTGRES_USER` and `POSTGRES_DB` environment variables. Optionally you can also use a `Secret` to store the credentials.
