@@ -38,6 +38,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [3.6. The project, step 15](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.6/project)
   - [3.7. The project, step 16](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.7/project)
   - [3.8. The project, step 17](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.8/project)
+  - [3.9. DBaaS vs DIY](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.9/project)
 
 ### 3.1. Pingpong GKE
 
@@ -941,13 +942,26 @@ It's recommended to use a Workload Identity instead, but for simplicity the key 
 
 ```sh
 kubectl create secret generic cloudsql-credentials \
-  --from-file=cloudsql-private-key.json=./cloudsql-private-key.json \
+  --namespace=project \
+  --from-file=cloudsql-private-key.json=./cloudsql-private-key.json
 ```
 
+We also encode the connection string and add it to our secrets
 
-Encode with `echo -n '...' | base64`
+```sh
+echo -n 'postgresql://postgres:todo@127.0.0.1:5432/postgres' | base64
+```
 
+This is still a very simplified version of what you would have to do to add Cloud SQL to a production GKE cluster and there might be some additional steps to reinforce security and prevent for example, unauthorized access. But it works...
 
 **DIY**:
 
 - Requires at least one `StatefulSet` resource with a `VolumeClaimTemplate` for the DB storage and a `Service` for the DB connection. As for configuration it depends on the database used, but for Postgres you can pretty much have it running with `POSTGRES_PASSWORD`, `POSTGRES_USER` and `POSTGRES_DB` environment variables. Optionally you can also use a `Secret` to store the credentials.
+
+#### Summary
+
+| Points of comparison | DBaaS - Cloud SQL (Postgres 15) | DIY - Container in GKE (Postgres 15) |
+|---|---|---|
+| Costs | Estimated cost is **an extra** $11.79 per month. | Estimated cost is at least less than $105.18 per month **but for the whole cluster** making this a poor comparison. |
+| Maintenance | Cloud SQL (https://cloud.google.com/sql/docs) offers: Automatic backups - High availability and failover - Network connectivity - Export and import capabilities - Maintenance and updates - Monitoring - Logging | You need to care of the DB maintenance yourself. You have full control over how you decide to manage the DB but this can be a lot more complex, time consuming and error prone and insecure than using a DBaaS. |
+| Required Work | Setting the Cloud SQL instance was cumbersome and required a lot of steps to get it up and connect it to the cluster. Once set up the database was running smoothly | The DIY solution was easier to implement and honestly a lot more straightforward than the Cloud SQL one in my opinion. |
