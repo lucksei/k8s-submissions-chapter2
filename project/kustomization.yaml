@@ -16,6 +16,7 @@ resources:
   - ./todo-backend/manifests/database.yaml
   - ./todo-backend/manifests/deployment.yaml
   - ./todo-backend/manifests/service.yaml
+  - ./todo-backend/manifests/backupsCronJob.yaml
 
   # Todo App
   - ./todo-app/manifests/configMap.yaml

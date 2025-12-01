@@ -965,3 +965,89 @@ This is still a very simplified version of what you would have to do to add Clou
 | Costs | Estimated cost is **an extra** $11.79 per month. | Estimated cost is at least less than $105.18 per month **but for the whole cluster** making this a poor comparison. |
 | Maintenance | Cloud SQL (https://cloud.google.com/sql/docs) offers: Automatic backups - High availability and failover - Network connectivity - Export and import capabilities - Maintenance and updates - Monitoring - Logging | You need to care of the DB maintenance yourself. You have full control over how you decide to manage the DB but this can be a lot more complex, time consuming and error prone and insecure than using a DBaaS. |
 | Required Work | Setting the Cloud SQL instance was cumbersome and required a lot of steps to get it up and connect it to the cluster. Once set up the database was running smoothly | The DIY solution was easier to implement and honestly a lot more straightforward than the Cloud SQL one in my opinion. |
+
+### 3.10. The project, step 18
+
+Enable the GCP Object Storage API to be able to push our backups
+
+```sh
+gcloud services enable storage.googleapis.com
+```
+
+Create a new bucket, this bucket needs a global unique name, we can use a combination of the name and the project ID for example
+
+```sh
+PROJECT_ID=$(gcloud config get-value project)
+gcloud storage buckets create gs://todo-backups-$PROJECT_ID/ --uniform-bucket-level-access
+```
+
+Add a new IAM Policy Binding to the bucket and the SA allowing the Service Account to have admin access to the bucket.
+
+```sh
+PROJECT_ID=$(gcloud config get-value project)
+gcloud storage buckets add-iam-policy-binding gs://todo-backups-$PROJECT_ID \
+  --member="serviceAccount:dwk-gke-sa@$PROJECT_ID.iam.gserviceaccount.com" \
+  --role="roles/storage.objectAdmin"
+
+```
+
+Create key secret for the Service Account, allowing the CronJob to push the backups to the bucket
+
+```sh
+gcloud iam service-accounts keys create ./private-key.json --iam-account dwk-gke-sa@dwk-gke-478711.iam.gserviceaccount.com
+```
+
+```sh
+kubectl create secret generic gke-credentials \
+  --from-file=gke-private-key.json=./gke-private-key.json \
+  -n project
+```
+
+To test out the CronJob
+```sh
+kubectl create job test-job --from=cronjob/todo-backend-postgres-backup
+```
+
+#### Pull up everything again...
+
+Reminding myself the commands to recreate the project in GKE (Cluster + Artifact Registry + Storage Bucket + gke-credentials secret)
+
+> Last two are in the previous section, not shown here, but will keep track in future exercises
+
+```sh
+ZONE=southamerica-east1-a
+gcloud container clusters create dwk-cluster \
+  --cluster-version=1.32 \
+  --location=$ZONE \
+  --num-nodes=3 \
+  --machine-type=e2-medium \
+  --spot \
+  --disk-size=32 \
+  --gateway-api=standard
+
+ZONE=southamerica-east1
+PROJECT_ID=$(gcloud config get-value project)
+gcloud artifacts repositories create dwk-repo \
+  --repository-format=docker \
+  --location=$ZONE \
+  --description="Dwk GKE Service Account" \
+  --project=$PROJECT_ID
+```
+
+Delete cluster, repo and bucket to save costs when not in use
+
+```sh
+ZONE=southamerica-east1-a
+gcloud container clusters delete dwk-cluster --location=$ZONE
+```
+
+```sh
+ZONE=southamerica-east1
+gcloud artifacts repositories delete dwk-repo --location=$ZONE
+```
+
+```sh
+PROJECT_ID=$(gcloud config get-value project)
+gcloud storage buckets delete gs://todo-backups-$PROJECT_ID/
+```
+
