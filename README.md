@@ -40,8 +40,8 @@ The repository contains **all chapters** from the course, not just the ones from
   - [3.8. The project, step 17](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.8/project)
   - [3.9. DBaaS vs DIY](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.9/project)
   - [3.10. The project, step 18](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.10/project)
+  - [3.11. The project, step 19](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.11/project)
 
-### 3.1. Pingpong GKE
 
 ## Exercise notes
 
@@ -436,7 +436,6 @@ This can be seen inside the "Explore" tab of grafana
 ![exerecise_2_10](img/20251118-00-exercise_2_10.png)
 
 ### 3.1. Pingpong GKE
-
 
 Installed gcloud sdk from here. https://docs.cloud.google.com/sdk/docs/install.
 
@@ -1009,6 +1008,8 @@ To test out the CronJob
 kubectl create job test-job --from=cronjob/todo-backend-postgres-backup
 ```
 
+![exerecise_3_10](img/20251201-02-exercise_3_10.png)
+
 #### Pull up everything again...
 
 Reminding myself the commands to recreate the project in GKE (Cluster + Artifact Registry + Storage Bucket + gke-credentials secret)
@@ -1025,7 +1026,9 @@ gcloud container clusters create dwk-cluster \
   --spot \
   --disk-size=32 \
   --gateway-api=standard
+```
 
+```sh
 ZONE=southamerica-east1
 PROJECT_ID=$(gcloud config get-value project)
 gcloud artifacts repositories create dwk-repo \
@@ -1049,6 +1052,49 @@ gcloud artifacts repositories delete dwk-repo --location=$ZONE
 
 ```sh
 PROJECT_ID=$(gcloud config get-value project)
-gcloud storage buckets delete gs://todo-backups-$PROJECT_ID/
+gcloud storage rm -r gs://todo-backups-$PROJECT_ID/
 ```
 
+### 3.11. The project, step 19
+
+https://youtu.be/xjpHggHKm78
+
+https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+
+Testing the project with the following limits (debating this with ol' LLMs...)
+
+**Backend**:
+
+- todo-backend:
+  - requests: 100m CPU, 128Mi memory
+  - limits: 200m CPU, 256Mi memory
+- todo-backend-postgres:
+  - requests: 200m CPU, 512Mi memory
+  - limits: 500m CPU, 1Gi memory
+- todo-backend-postgres-backup
+  - requests: 50m CPU, 64Mi memory
+  - limits: 100m CPU, 128Mi memory
+
+**Frontend**:
+
+- todo-app:
+  - requests: 50m CPU, 64Mi memory
+  - limits: 100m CPU, 128Mi memory
+
+**Misc**:
+
+- todo-app-cronjob
+  - requests: 50m CPU, 32Mi memory
+  - limits: 100m CPU, 64Mi memory
+
+**Total Requirements:** 700m CPU requests, ~700Mi memory requests
+
+When using `kubectl top pods`
+
+```
+(main)➜ kubectl top pods
+NAME                            CPU(cores)   MEMORY(bytes)   
+todo-app-599cfd6c6d-bf7xf       1m           41Mi            
+todo-backend-677f87b95c-szkzj   1m           48Mi            
+todo-backend-postgres-0         1m           34Mi   
+```

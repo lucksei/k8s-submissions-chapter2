@@ -38,7 +38,13 @@ spec:
             periodSeconds: 10
             timeoutSeconds: 5
           imagePullPolicy: Always
-          resources: {}
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m" 
           envFrom:
             - configMapRef:
                 name: todo-backend-cm

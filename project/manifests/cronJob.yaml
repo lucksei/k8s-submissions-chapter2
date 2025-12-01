@@ -19,6 +19,13 @@ spec:
               command:
                 - /bin/sh
                 - /scripts/todo_job.sh
+              resources: 
+                requests:
+                  memory: "32Mi"
+                  cpu: "50m"
+                limits:
+                  memory: "64Mi"
+                  cpu: "100m"
               volumeMounts:
                 - name: todo-project-cm
                   mountPath: /scripts/todo_job.sh
