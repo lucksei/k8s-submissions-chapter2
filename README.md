@@ -41,7 +41,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [3.9. DBaaS vs DIY](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.9/project)
   - [3.10. The project, step 18](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.10/project)
   - [3.11. The project, step 19](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.11/project)
-
+  - [3.12. The project, step 20](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.12/project)
 
 ## Exercise notes
 
@@ -1098,3 +1098,9 @@ todo-app-599cfd6c6d-bf7xf       1m           41Mi
 todo-backend-677f87b95c-szkzj   1m           48Mi            
 todo-backend-postgres-0         1m           34Mi   
 ```
+
+### 3.12. The project, step 20
+
+https://docs.cloud.google.com/kubernetes-engine/docs/concepts/observability
+
+![exerecise_3_12](img/20251201-03-exercise_3_12.png)
