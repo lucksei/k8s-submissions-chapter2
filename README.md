@@ -39,6 +39,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [3.7. The project, step 16](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.7/project)
   - [3.8. The project, step 17](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.8/project)
   - [3.9. DBaaS vs DIY](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.9/project)
+  - [3.10. The project, step 18](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.10/project)
 
 ### 3.1. Pingpong GKE
 
