@@ -26,16 +26,9 @@ spec:
             httpGet:
               path: /health
               port: 3000
-            initialDelaySeconds: 45
-            periodSeconds: 10
-            timeoutSeconds: 5
-          livenessProbe:
-            httpGet:
-              path: /health
-              port: 3000
-            initialDelaySeconds: 60
-            periodSeconds: 20
-            timeoutSeconds: 5
+            # initialDelaySeconds: 0
+            # periodSeconds: 10
+            # timeoutSeconds: 5
           resources: {}
           env:
             - name: PORT

@@ -42,6 +42,8 @@ The repository contains **all chapters** from the course, not just the ones from
   - [3.10. The project, step 18](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.10/project)
   - [3.11. The project, step 19](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.11/project)
   - [3.12. The project, step 20](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.12/project)
+- Chapter 5: GitOps and friends
+  - [4.1. Readines probe](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.1/exercises)
 
 ## Exercise notes
 
