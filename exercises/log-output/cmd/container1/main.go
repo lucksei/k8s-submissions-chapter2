@@ -131,8 +131,13 @@ func getPingPongCount(url string) (int, error) {
 func main() {
 	var message = config.Message
 
-	// Health check endpoint
+	// Readiness endpoint
 	http.HandleFunc("/", func(res http.ResponseWriter, req *http.Request) {
+		res.Write([]byte("Ok!"))
+	})
+
+	// Health check endpoint
+	http.HandleFunc("/healthz", func(res http.ResponseWriter, req *http.Request) {
 		res.Write([]byte("Ok!"))
 	})
 

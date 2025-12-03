@@ -11,18 +11,3 @@ spec:
     - port: 80
       protocol: TCP
       targetPort: 3000
-
----
-# # NOTE: Service for local cluster with K3d using ClusterIP or NodePort
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: pingpong-svc
-# spec:
-#   type: ClusterIP
-#   selector:
-#     app: pingpong
-#   ports:
-#     - protocol: TCP
-#       port: 3000
-#       targetPort: 3000

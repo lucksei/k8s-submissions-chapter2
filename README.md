@@ -44,6 +44,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [3.12. The project, step 20](https://github.com/lucksei/k8s-submissions-chapter2/tree/3.12/project)
 - Chapter 5: GitOps and friends
   - [4.1. Readines probe](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.1/exercises)
+  - [4.2. The project, step 21](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.2/exercises)
 
 ## Exercise notes
 
@@ -1136,10 +1137,18 @@ Install the NGINX Gateway Fabric. More info about the Gateway [here](https://doc
 helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric --create-namespace -n nginx-gateway --wait
 ```
 
-The NGINX Gateway Fabric uses `gatewayClassName: nginx` instead of `gatewayClassName: gke-l7-global-external-managed` in the yaml manifest.
+> Instructions for installing the NGINX Gateway Fabric with helm on the [Chart's Artifact Hub](https://artifacthub.io/packages/helm/nginx-gateway-fabric/nginx-gateway-fabric)
+
+The NGINX Gateway Fabric uses `gatewayClassName: nginx` instead of `gatewayClassName: gke-l7-global-external-managed` in the yaml manifest, this should technically be the only modification needed for the deployment to work locally instead of GKE.
+
+Can now execute `./exercises/init.sh` to build, push & deploy the PingPong & LogOutput apps on the `exercises` namespace
 
 To delete the cluster when done, run
 
 ```sh
 k3d cluster delete my-cluster
 ```
+
+### 4.2. The project, step 21
+
+Creating the required Health Check Probes for the exercises apps because i misread tht exercise instructions... doing the same for the 'Project Apps'.

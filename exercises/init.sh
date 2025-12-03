@@ -20,7 +20,7 @@ docker build -t lucksei/log-output-container1 \
   -f "${SCRIPT_DIR}/log-output/Dockerfile.container1" \
   "${SCRIPT_DIR}/log-output" 
 # Ping Pong Server
-docker build -t lucksei/pingpong-server \
+docker build -t lucksei/pingpong \
   -f "${SCRIPT_DIR}/pingpong/Dockerfile" \
   "${SCRIPT_DIR}/pingpong"
 
@@ -29,7 +29,7 @@ docker build -t lucksei/pingpong-server \
 ####
 docker push lucksei/log-output-container0:latest
 docker push lucksei/log-output-container1:latest
-docker push lucksei/pingpong-server:latest
+docker push lucksei/pingpong:latest
 
 ####
 # Run kustomization

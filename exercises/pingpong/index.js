@@ -8,7 +8,7 @@ app.use(express.json())
 
 sequelize.connectToDatabase()
 
-app.get('/health', (req, res) => {
+app.get('/healthz', (req, res) => {
   return res.send('Ok!')
 })
 

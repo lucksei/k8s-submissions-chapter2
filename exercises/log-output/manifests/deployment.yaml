@@ -48,9 +48,13 @@ spec:
             httpGet:
               path: /
               port: 3000
-            # initialDelaySeconds: 0
-            # periodSeconds: 10 
-            # timeoutSeconds: 1
+          livenessProbe:
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 1
+            httpGet:
+              path: /healthz
+              port: 3000
           envFrom:
             - configMapRef:
                 name: log-output-cm
