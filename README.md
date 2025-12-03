@@ -1104,3 +1104,40 @@ todo-backend-postgres-0         1m           34Mi
 https://docs.cloud.google.com/kubernetes-engine/docs/concepts/observability
 
 ![exerecise_3_12](img/20251201-03-exercise_3_12.png)
+
+### 4.1. Readines probe
+
+> I already set this in exercise "3.2. Back to Ingress". This is because i needed to add a ReadinessProbe for the Ingress, GKE copies some parameters from the ReadinessProbe to the Health Checks, without this config the app never responds to the Load Balancer and its not accessible from the public IP provided.
+> NOTE: I also added a LivenessProbe when testing, this is not required but i didn't know yet...
+
+Revisiting the ReadinessProbe for the PingPong, now it should be ready when it has a connection to the database
+
+Recreate k3d cluster again with 2 nodes, disable traefik and apply the Gateway API
+
+```sh
+k3d cluster create my-cluster\
+  --port 8080:80@loadbalancer \
+  --port 8443:443@loadbalancer \
+  --k3s-arg "--disable=traefik@server:*" \
+  --agents 2
+```
+
+Install the Gateway API from kubernetes-sigs repo
+
+```sh
+kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml
+```
+
+Install the NGINX Gateway Fabric 
+
+```sh
+helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric --create-namespace -n nginx-gateway --wait
+```
+
+The NGINX Gateway Fabric uses `gatewayClassName: nginx` instead of `gatewayClassName: gke-l7-global-external-managed` in the yaml manifest.
+
+To delete the cluster when done, run
+
+```sh
+k3d cluster delete my-cluster
+```

@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: exercises
+
+resources:
+  # Exercises Level
+  - ./manifests/gateway.yaml
+  
+  # Ping-Pong App
+  - ./pingpong/manifests/database.yaml
+  - ./pingpong/manifests/deployment.yaml
+  - ./pingpong/manifests/service.yaml
+
+  # Log Output App
+  - ./log-output/manifests/configMap.yaml
+  - ./log-output/manifests/deployment.yaml
+  - ./log-output/manifests/service.yaml
