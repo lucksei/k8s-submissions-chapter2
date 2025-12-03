@@ -18,13 +18,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms'))
 
 app.get('/', (req, res) => {
-  return res.status(200).send('Ok!');
+  return res.status(200).send('Todo Backend is running');
 })
+
+app.get('/healthz', (req, res) => { res.status(200).send('Healthy'); });
+
+app.get('/readyz', (req, res) => {  res.status(200).send('OK'); });
 
 app.get('/api', (req, res) => {
   return res.status(200).send('Hello from the backend!');
 })
-
 
 app.get('/api/todos', async (req, res) => {
   const todoList = await Todo.findAll();

@@ -38,6 +38,6 @@ spec:
             - name: PORT
               value: '3000'
             - name: DATABASE_URI
-              # value: postgres://pingpong:pingpong@pingpong-postgres-svc:5432/pingpong
+              value: postgres://pingpong:pingpong@pingpong-postgres-svc:5432/pingpong
               # NOTE: The above line is commented out to simulate a misconfiguration for the exercise.
-              value: postgres://pingpong:wrongpassword@pingpong-postgres-svc:5432/pingpong
+              # value: postgres://pingpong:wrongpassword@pingpong-postgres-svc:5432/pingpong

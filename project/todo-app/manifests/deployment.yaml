@@ -28,6 +28,17 @@ spec:
           volumeMounts:
             - name: todo-app-pv
               mountPath: /usr/src/data
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 3000
+          livenessProbe:
+            initialDelaySeconds: 15 
+            periodSeconds: 10
+            timeoutSeconds: 1
+            httpGet:
+              path: /readyz
+              port: 3000
           resources: 
             requests:
               memory: "64Mi"
