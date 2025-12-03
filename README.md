@@ -1130,7 +1130,7 @@ Install the Gateway API from kubernetes-sigs repo
 kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml
 ```
 
-Install the NGINX Gateway Fabric 
+Install the NGINX Gateway Fabric. More info about the Gateway [here](https://docs.nginx.com/nginx-gateway-fabric/get-started)
 
 ```sh
 helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric --create-namespace -n nginx-gateway --wait
