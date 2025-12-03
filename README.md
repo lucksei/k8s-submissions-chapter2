@@ -45,6 +45,7 @@ The repository contains **all chapters** from the course, not just the ones from
 - Chapter 5: GitOps and friends
   - [4.1. Readines probe](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.1/exercises)
   - [4.2. The project, step 21](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.2/exercises)
+  - [4.3. Prometheus](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.3)
 
 ## Exercise notes
 
@@ -1152,3 +1153,37 @@ k3d cluster delete my-cluster
 ### 4.2. The project, step 21
 
 Creating the required Health Check Probes for the exercises apps because i misread tht exercise instructions... doing the same for the 'Project Apps'.
+
+### 4.3. Prometheus
+
+Setting up Prometheus using helm, link to the repo [here](https://github.com/prometheus-community/helm-charts)
+
+There are also instructions in the Artifact Hub [here](https://artifacthub.io/packages/helm/prometheus-community/prometheus)
+
+```sh
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts 
+```
+
+```sh
+helm install my-prometheus prometheus-community/prometheus --version 27.49.0 -n prometheus
+```
+
+Check the status of the deployment
+```sh
+helm list --all-namespaces
+```
+
+port forward the prometheus gui to port 9090
+
+```sh
+PROMETHEUS_SVC=service/my-prometheus-server
+kubectl --namespace prometheus port-forward $PROMETHEUS_SVC 9090:80
+```
+
+We can now query for the ammount of pods created by StatefulSets
+
+```promql
+sum(kube_pod_info{created_by_kind="StatefulSet"})
+```
+
+![exerecise_4_3](img/20251203-04-exercise_4_3.png)
