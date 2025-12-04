@@ -8,6 +8,7 @@ resources:
   - ./manifests/gateway.yaml
   
   # Ping-Pong App
+  - ./pingpong/manifests/analysisTemplate.yaml
   - ./pingpong/manifests/database.yaml
   - ./pingpong/manifests/deployment.yaml
   - ./pingpong/manifests/service.yaml

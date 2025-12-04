@@ -1187,3 +1187,82 @@ sum(kube_pod_info{created_by_kind="StatefulSet"})
 ```
 
 ![exerecise_4_3](img/20251203-04-exercise_4_3.png)
+
+### 4.4. Your canary 
+
+```promql
+sum by (namespace) (rate(container_cpu_usage_seconds_total{image!=""}[5m]))*100
+```
+
+Installing Argo Rollouts
+
+```sh
+kubectl create namespace argo-rollouts
+kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+```
+
+Execute the new init.sh script.
+
+```sh
+./exercises/init.sh
+```
+
+After the deployment completes it should start rolling out the "pingpong deployment" with the canary strategy
+
+To test out a "new" version try pushing the image with a new tag
+
+```sh
+docker build -t lucksei/pingpong:test-tag .
+docker push lucksei/pingpong:test-tag
+```
+
+Then test the rollout with the new image name
+```sh
+kubectl argo rollouts set image pingpong-deployment \
+  pingpong=lucksei/pingpong:test-tag -n exercises
+```
+
+We can see the first pod was scaled up with `kubectl get pods` (25% of the pods were scaled up)
+```
+...
+pingpong-deployment-5d88b5bc8f-dglmn      0/1     ContainerCreating   0             6s
+pingpong-deployment-b6df757cf-2rkch       1/1     Running             3 (96s ago)   2m5s
+pingpong-deployment-b6df757cf-ft2z4       1/1     Running             3 (90s ago)   2m5s
+pingpong-deployment-b6df757cf-tpgdr       1/1     Running             3 (86s ago)   2m5s
+...
+```
+
+Then using kubectl describe to inspect the canary deployment we can see that the Analysis is in progress, it will succeed only if the CPU usage of the namespace `exercises` is lower than 10% , which is set to fail on purpose. `kubectl describe rollouts.argoproj.io pingpong-deployment`
+
+```sh
+Events:
+  Type     Reason                  Age    From                 Message
+  ----     ------                  ----   ----                 -------
+  Normal   RolloutAddedToInformer  4m44s  rollouts-controller  Rollout resource added to informer: exercises/pingpong-deployment
+  Normal   RolloutUpdated          4m44s  rollouts-controller  Rollout updated to revision 1
+  Normal   NewReplicaSetCreated    4m44s  rollouts-controller  Created ReplicaSet pingpong-deployment-b6df757cf (revision 1)
+  Normal   RolloutNotCompleted     4m44s  rollouts-controller  Rollout not completed, started update to revision 1 (b6df757cf)
+  Normal   ScalingReplicaSet       4m44s  rollouts-controller  Scaled up ReplicaSet pingpong-deployment-b6df757cf (revision 1) from 0 to 4
+  Normal   RolloutCompleted        4m44s  rollouts-controller  Rollout completed update to revision 1 (b6df757cf): Initial deploy
+  Normal   RolloutUpdated          2m45s  rollouts-controller  Rollout updated to revision 2
+  Normal   NewReplicaSetCreated    2m45s  rollouts-controller  Created ReplicaSet pingpong-deployment-5d88b5bc8f (revision 2)
+  Normal   RolloutNotCompleted     2m45s  rollouts-controller  Rollout not completed, started update to revision 2 (5d88b5bc8f)
+  Normal   ScalingReplicaSet       2m45s  rollouts-controller  Scaled down ReplicaSet pingpong-deployment-b6df757cf (revision 1) from 4 to 3
+  Normal   ScalingReplicaSet       2m45s  rollouts-controller  Scaled up ReplicaSet pingpong-deployment-5d88b5bc8f (revision 2) from 0 to 1
+  Normal   RolloutStepCompleted    2m30s  rollouts-controller  Rollout step 1/5 completed (setWeight: 25)
+  Normal   RolloutPaused           2m30s  rollouts-controller  Rollout is paused (CanaryPauseStep)
+  Normal   RolloutStepCompleted    2m     rollouts-controller  Rollout step 2/5 completed (pause: 30s)
+  Normal   RolloutResumed          2m     rollouts-controller  Rollout is resumed
+  Normal   AnalysisRunRunning      2m     rollouts-controller  Step Analysis Run 'pingpong-deployment-5d88b5bc8f-2-2' Status New: 'Running' Previous: ''
+  Warning  AnalysisRunFailed       0s     rollouts-controller  Step Analysis Run 'pingpong-deployment-5d88b5bc8f-2-2' Status New: 'Failed' Previous: 'Running'
+  Warning  RolloutAborted          0s     rollouts-controller  Rollout aborted update to revision 2: Metric "cpu-usage" assessed Failed due to failed (1) > failureLimit (0)
+  Normal   ScalingReplicaSet       0s     rollouts-controller  Scaled up ReplicaSet pingpong-deployment-b6df757cf (revision 1) from 3 to 4
+  Normal   ScalingReplicaSet       0s     rollouts-controller  Scaled down ReplicaSet pingpong-deployment-5d88b5bc8f (revision 2) from 1 to 0
+```
+
+```sh
+pingpong-deployment-b6df757cf-2rkch       1/1     Running   3 (5m18s ago)   5m47s
+pingpong-deployment-b6df757cf-ft2z4       1/1     Running   3 (5m12s ago)   5m47s
+pingpong-deployment-b6df757cf-qxmk5       1/1     Running   0               63s
+pingpong-deployment-b6df757cf-tpgdr       1/1     Running   3 (5m8s ago)    5m47s
+```

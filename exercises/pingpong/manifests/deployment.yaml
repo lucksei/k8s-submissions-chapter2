@@ -1,16 +1,27 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   labels:
     app: pingpong
-  name: pingpong
+  name: pingpong-deployment
   namespace: exercises
 spec:
-  replicas: 1
+  replicas: 4
   selector:
     matchLabels:
       app: pingpong
-  strategy: {}
+  strategy: 
+    canary:
+      steps:
+        - setWeight: 25
+        - pause:
+            duration: 30s
+        - analysis:
+            templates:
+              - templateName: cpu-usage
+        - setWeight: 50
+        - pause:
+            duration: 30s
   template:
     metadata:
       labels:
@@ -23,12 +34,15 @@ spec:
             - containerPort: 3000
               protocol: TCP
           readinessProbe:
+            initialDelaySeconds: 5 
+            periodSeconds: 5
+            timeoutSeconds: 1
             httpGet:
               path: /pings
               port: 3000
           livenessProbe:
             initialDelaySeconds: 15
-            periodSeconds: 10
+            periodSeconds: 5 
             timeoutSeconds: 1
             httpGet:
               path: /healthz

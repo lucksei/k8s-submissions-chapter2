@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: cpu-usage
+spec:
+  metrics:
+    - name: cpu-usage
+      initialDelay: 2m
+      successCondition: result < 0.10 # Make sure that the application doesn't get updated if the CPU usage of the namespace is more than 10%
+      provider:
+        prometheus:
+          address: http://my-prometheus-server.prometheus.svc.cluster.local:80
+          query: | 
+            scalar(
+              sum(rate(container_cpu_usage_seconds_total{namespace="exercises",image!=""}[5m]))*100
+            )
+            
