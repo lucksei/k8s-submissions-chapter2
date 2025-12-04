@@ -46,6 +46,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [4.1. Readines probe](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.1/exercises)
   - [4.2. The project, step 21](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.2/exercises)
   - [4.3. Prometheus](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.3)
+  - [4.4. Your canary](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.4/exercises)
 
 ## Exercise notes
 
