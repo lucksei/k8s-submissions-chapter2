@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import config from './utils/config';
-import Footer from './components/Footer';
-import TodoForm from './components/TodoForm';
-import TodoList from './components/TodoList';
-import todosService from './services/todos';
+import { useState, useEffect } from "react";
+import config from "./utils/config";
+import Footer from "./components/Footer";
+import TodoForm from "./components/TodoForm";
+import TodoList from "./components/TodoList";
+import todosService from "./services/todos";
 
 const App = () => {
   const [healthy, setHealthy] = useState(false);
@@ -33,6 +33,11 @@ const App = () => {
     setTodos(todos.concat(newTodo));
   };
 
+  const handleMarkAsDone = async (todoId) => {
+    const updatedTodo = await todosService.updateTodo(todoId, true);
+    setTodos(todos.map((todo) => (todo.id === todoId ? updatedTodo : todo)));
+  };
+
   if (!healthy) {
     return (
       <div className="flex flex-col justify-center items-center">
@@ -43,8 +48,8 @@ const App = () => {
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center">
-        <div className="flex flex-col max-w-300 mx-10 mt-5">
+      <div className="flex flex-col justify-center items-center pb-20">
+        <div className="flex flex-col max-w-300 w-full px-3 mt-5 ">
           <h1>The Project</h1>
           <img
             className="shadow-md rounded-md"
@@ -52,7 +57,7 @@ const App = () => {
             alt="hourly img"
           />
           <TodoForm onSubmit={handleSubmit} />
-          <TodoList todoList={todos} />
+          <TodoList todoList={todos} onMarkAsDone={handleMarkAsDone} />
         </div>
       </div>
       <Footer />

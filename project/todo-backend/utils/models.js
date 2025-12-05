@@ -13,6 +13,11 @@ Todo.init({
     allowNull: false,
 
   },
+  done: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  }
 }, {
   sequelize,
   underscored: true,

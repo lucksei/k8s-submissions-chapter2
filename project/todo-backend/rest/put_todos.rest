@@ -1,0 +1,7 @@
+### Modify a todo 'done' state
+PUT http://localhost:3001/api/todos/1
+Content-Type: application/json
+
+{
+    "done": true
+}

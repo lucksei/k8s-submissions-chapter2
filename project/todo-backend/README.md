@@ -7,6 +7,7 @@ docker build --no-cache -t lucksei/todo-backend . && docker push lucksei/todo-ba
 ```
 
 Force update image (GKE can be stubborn)
+
 ```sh
 DIGEST=$(docker inspect lucksei/todo-backend:latest --format='{{index .RepoDigests 0}}')
 kubectl set image deployment/todo-backend todo-backend=${DIGEST} -n project
@@ -24,4 +25,14 @@ Test API manually
 curl -X POST "http://localhost:3001/api/todos" \
   -H "Content-Type: application/json" \
   -d '{"todo": "new todo test"}'
+```
+
+Test api in dev mode (using container database)
+
+```sh
+docker run --rm -d -p 5432:5432 --name todo-backend-postgres \
+ -e POSTGRES_USER=todo \
+ -e POSTGRES_PASSWORD=todo \
+ -e POSTGRES_DB=todo \
+ postgres:15.15-alpine3.22
 ```

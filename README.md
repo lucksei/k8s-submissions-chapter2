@@ -47,6 +47,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [4.2. The project, step 21](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.2/exercises)
   - [4.3. Prometheus](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.3)
   - [4.4. Your canary](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.4/exercises)
+  - [4.5. The project, step 22](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.5/project)
 
 ## Exercise notes
 
@@ -467,8 +468,8 @@ Created cluster inside gke
 
 ```sh
 # Optimized cluster w auto scaling
-# Some zones: us-west1 (Oregon), southamerica-east1 (Sao Paulo), southamerica-west1 (Santiago) 
-ZONE=southamerica-east1 
+# Some zones: us-west1 (Oregon), southamerica-east1 (Sao Paulo), southamerica-west1 (Santiago)
+ZONE=southamerica-east1
 gcloud container clusters create dwk-cluster \
   --zone=$ZONE \
   --cluster-version=1.32 \
@@ -523,7 +524,7 @@ gcloud compute firewall-rules create fw-allow-health-check \
 Starting a new cluster again with the `exercises` namespace.
 
 ```sh
-ZONE=southamerica-east1 
+ZONE=southamerica-east1
 gcloud container clusters create dwk-cluster \
   --zone=$ZONE \
   --cluster-version=1.32 \
@@ -613,10 +614,11 @@ gcloud container clusters delete dwk-cluster --location=$REGION
 ### 3.4. Rewritten routing
 
 The HTTPRoute resource for the pingpong app now has route rewriting from `/pingpong` to `/`. Also changed the paths in the app to accomodate this change:
+
 - `/pingpong` -> `/`
 - `/` -> `/health`
 
-> Important note: Do **NOT** use the `gke-l7-gxlb` gatewayClassName, it does not support route filters like `ReplacePrefixMatch`. Instead use the `gke-l7-global-external-managed` which seems to be a more modern one. Took me a while to figure this out ;_;. 
+> Important note: Do **NOT** use the `gke-l7-gxlb` gatewayClassName, it does not support route filters like `ReplacePrefixMatch`. Instead use the `gke-l7-global-external-managed` which seems to be a more modern one. Took me a while to figure this out ;\_;.
 
 ```
 Events:
@@ -663,6 +665,7 @@ gcloud container clusters delete dwk-cluster --location=$REGION
 Create a new service account: https://docs.cloud.google.com/iam/docs/keys-create-delete
 
 IAM Roles for the Service Account
+
 - Kubernetes Engine Service Agent
 - Storage Admin
 - Artifact Registry Administrator
@@ -760,7 +763,7 @@ Configure docker to use the new Artifact Registry (This step is done in GitHub A
 gcloud auth configure-docker $ZONE-docker.pkg.dev
 ```
 
-To send the image to Artifact Registry we need to tag it. 
+To send the image to Artifact Registry we need to tag it.
 
 The tag will look something like this for my specific case but will vary
 
@@ -800,6 +803,7 @@ gcloud container clusters delete dwk-cluster --location=$ZONE
 ```
 
 Delete the Artifact Registry if needed
+
 ```sh
 ZONE=southamerica-east1
 gcloud artifacts repositories delete dwk-repo --location=$ZONE
@@ -827,7 +831,7 @@ Using the pricing calculator: https://cloud.google.com/products/calculator:
 
 **DBaaS**:
 
-- southamerica-east1 
+- southamerica-east1
 - enterprise (standard)
 - General purpose db-f1-micro
 - 1GB SSD
@@ -845,13 +849,14 @@ Estimated cost is $11.79 per month.
 
 Estimated cost is $105.18 per month.
 
-> Note that this includes the rest of the deployment (cluster, Artifact Registry, etc) which are not included in the DBaaS solution. so its not a direct comparison but useful to understand the differences, the costs of running the DIY solution are probably a lot cheaper than the ones calculated here, but probably a tiny bit higher than the DBaaS. 
+> Note that this includes the rest of the deployment (cluster, Artifact Registry, etc) which are not included in the DBaaS solution. so its not a direct comparison but useful to understand the differences, the costs of running the DIY solution are probably a lot cheaper than the ones calculated here, but probably a tiny bit higher than the DBaaS.
 
 #### Maintenance
 
 **DBaaS**:
 
 Cloud SQL (https://cloud.google.com/sql/docs) offers the following capabilities out of the box:
+
 - Backups
 - High availability and failover
 - Network connectivity
@@ -902,7 +907,7 @@ gcloud sql instances create todo-backend-postgres \
 To delete the instance run:
 
 ```sh
-gcloud sql instances delete todo-backend-postgres 
+gcloud sql instances delete todo-backend-postgres
 ```
 
 To connect the Cloud SQL instance to GKE, It's not as simple as the DYI solution. One way we can do this is with the Cloud SQL Proxy solution, which requires us to add the tool using the sidecar container pattern. We can check the documentation [here](https://docs.cloud.google.com/sql/docs/mysql/connect-kubernetes-engine).
@@ -965,11 +970,11 @@ This is still a very simplified version of what you would have to do to add Clou
 
 #### Summary
 
-| Points of comparison | DBaaS - Cloud SQL (Postgres 15) | DIY - Container in GKE (Postgres 15) |
-|---|---|---|
-| Costs | Estimated cost is **an extra** $11.79 per month. | Estimated cost is at least less than $105.18 per month **but for the whole cluster** making this a poor comparison. |
-| Maintenance | Cloud SQL (https://cloud.google.com/sql/docs) offers: Automatic backups - High availability and failover - Network connectivity - Export and import capabilities - Maintenance and updates - Monitoring - Logging | You need to care of the DB maintenance yourself. You have full control over how you decide to manage the DB but this can be a lot more complex, time consuming and error prone and insecure than using a DBaaS. |
-| Required Work | Setting the Cloud SQL instance was cumbersome and required a lot of steps to get it up and connect it to the cluster. Once set up the database was running smoothly | The DIY solution was easier to implement and honestly a lot more straightforward than the Cloud SQL one in my opinion. |
+| Points of comparison | DBaaS - Cloud SQL (Postgres 15)                                                                                                                                                                                   | DIY - Container in GKE (Postgres 15)                                                                                                                                                                            |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Costs                | Estimated cost is **an extra** $11.79 per month.                                                                                                                                                                  | Estimated cost is at least less than $105.18 per month **but for the whole cluster** making this a poor comparison.                                                                                             |
+| Maintenance          | Cloud SQL (https://cloud.google.com/sql/docs) offers: Automatic backups - High availability and failover - Network connectivity - Export and import capabilities - Maintenance and updates - Monitoring - Logging | You need to care of the DB maintenance yourself. You have full control over how you decide to manage the DB but this can be a lot more complex, time consuming and error prone and insecure than using a DBaaS. |
+| Required Work        | Setting the Cloud SQL instance was cumbersome and required a lot of steps to get it up and connect it to the cluster. Once set up the database was running smoothly                                               | The DIY solution was easier to implement and honestly a lot more straightforward than the Cloud SQL one in my opinion.                                                                                          |
 
 ### 3.10. The project, step 18
 
@@ -1009,6 +1014,7 @@ kubectl create secret generic gke-credentials \
 ```
 
 To test out the CronJob
+
 ```sh
 kubectl create job test-job --from=cronjob/todo-backend-postgres-backup
 ```
@@ -1098,10 +1104,10 @@ When using `kubectl top pods`
 
 ```
 (main)➜ kubectl top pods
-NAME                            CPU(cores)   MEMORY(bytes)   
-todo-app-599cfd6c6d-bf7xf       1m           41Mi            
-todo-backend-677f87b95c-szkzj   1m           48Mi            
-todo-backend-postgres-0         1m           34Mi   
+NAME                            CPU(cores)   MEMORY(bytes)
+todo-app-599cfd6c6d-bf7xf       1m           41Mi
+todo-backend-677f87b95c-szkzj   1m           48Mi
+todo-backend-postgres-0         1m           34Mi
 ```
 
 ### 3.12. The project, step 20
@@ -1162,7 +1168,7 @@ Setting up Prometheus using helm, link to the repo [here](https://github.com/pro
 There are also instructions in the Artifact Hub [here](https://artifacthub.io/packages/helm/prometheus-community/prometheus)
 
 ```sh
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts 
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 ```
 
 ```sh
@@ -1170,6 +1176,7 @@ helm install my-prometheus prometheus-community/prometheus --version 27.49.0 -n 
 ```
 
 Check the status of the deployment
+
 ```sh
 helm list --all-namespaces
 ```
@@ -1189,7 +1196,7 @@ sum(kube_pod_info{created_by_kind="StatefulSet"})
 
 ![exerecise_4_3](img/20251203-04-exercise_4_3.png)
 
-### 4.4. Your canary 
+### 4.4. Your canary
 
 ```promql
 sum by (namespace) (rate(container_cpu_usage_seconds_total{image!=""}[5m]))*100
@@ -1218,12 +1225,14 @@ docker push lucksei/pingpong:test-tag
 ```
 
 Then test the rollout with the new image name
+
 ```sh
 kubectl argo rollouts set image pingpong-deployment \
   pingpong=lucksei/pingpong:test-tag -n exercises
 ```
 
 We can see the first pod was scaled up with `kubectl get pods` (25% of the pods were scaled up)
+
 ```
 ...
 pingpong-deployment-5d88b5bc8f-dglmn      0/1     ContainerCreating   0             6s
@@ -1266,4 +1275,44 @@ pingpong-deployment-b6df757cf-2rkch       1/1     Running   3 (5m18s ago)   5m47
 pingpong-deployment-b6df757cf-ft2z4       1/1     Running   3 (5m12s ago)   5m47s
 pingpong-deployment-b6df757cf-qxmk5       1/1     Running   0               63s
 pingpong-deployment-b6df757cf-tpgdr       1/1     Running   3 (5m8s ago)    5m47s
+```
+
+### 4.5. The project, step 22
+
+Updating the Todo App Project
+
+#### Restart Cluster
+
+> `k3d cluster delete my-cluster`
+
+Recreate k3d cluster again with 2 nodes, disable traefik and apply the Gateway API
+
+```sh
+k3d cluster create my-cluster\
+  --port 8080:80@loadbalancer \
+  --port 8443:443@loadbalancer \
+  --k3s-arg "--disable=traefik@server:*" \
+  --agents 2
+```
+
+Install the Gateway API from kubernetes-sigs and the NGINX Gateway Fabric
+
+```sh
+kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml
+helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric --create-namespace -n nginx-gateway --wait
+```
+
+Get Prometheus chart
+
+```sh
+kubectl create namespace prometheus
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm install my-prometheus prometheus-community/prometheus --version 27.49.0 -n prometheus
+```
+
+Installing Argo Rollouts
+
+```sh
+kubectl create namespace argo-rollouts
+kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
 ```

@@ -1,0 +1,8 @@
+### Default GET
+GET http://localhost:3001/api/todos
+
+### Only not done
+GET http://localhost:3001/api/todos?done=false
+
+### Only done
+GET http://localhost:3001/api/todos?done=true
