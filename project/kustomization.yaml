@@ -15,7 +15,7 @@ resources:
   - ./todo-backend/manifests/database.yaml
   - ./todo-backend/manifests/deployment.yaml
   - ./todo-backend/manifests/service.yaml
-  - ./todo-backend/manifests/backupsCronJob.yaml
+  # - ./todo-backend/manifests/backupsCronJob.yaml # NOTE: Enable for GKE (Sends to a bucket)
 
   # Todo Broadcaster
   - ./todo-broadcaster/manifests/deployment.yaml

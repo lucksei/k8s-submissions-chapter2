@@ -29,3 +29,8 @@ spec:
                 secretKeyRef:
                   name: todo-backend-secret
                   key: NATS_URI
+            - name: DISCORD_WEBHOOK_URL
+              valueFrom:
+                secretKeyRef:
+                  name: todo-backend-secret
+                  key: DISCORD_WEBHOOK_URL

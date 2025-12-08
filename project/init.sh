@@ -19,12 +19,17 @@ docker build -t lucksei/todo-app \
 docker build -t lucksei/todo-backend \
   -f "${SCRIPT_DIR}/todo-backend/Dockerfile" \
   "${SCRIPT_DIR}/todo-backend"
+# Todo Broadcaster
+docker build -t lucksei/todo-broadcaster \
+  -f "${SCRIPT_DIR}/todo-broadcaster/Dockerfile" \
+  "${SCRIPT_DIR}/todo-broadcaster"
 
 ####
 # Upload images to docker registry
 ####
 docker push lucksei/todo-app:latest
 docker push lucksei/todo-backend:latest
+docker push lucksei/todo-broadcaster:latest
 
 ####
 # Run kustomization

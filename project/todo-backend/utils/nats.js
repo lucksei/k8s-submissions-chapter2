@@ -15,7 +15,7 @@ const connectToNats = async () => {
 
 const publishAddTodo = async (todo) => {
   try {
-    const message = JSON.stringify({ type: "add", todo: todo.todo });
+    const message = JSON.stringify({ type: "add", todo });
     await nc.publish("todo", sc.encode(message));
     console.log(`published add: ${message}`);
   } catch (err) {
@@ -25,7 +25,7 @@ const publishAddTodo = async (todo) => {
 
 const publishModifyTodo = async (todo) => {
   try {
-    const message = JSON.stringify({ type: "modify", todo: todo.todo });
+    const message = JSON.stringify({ type: "modify", todo });
     await nc.publish("todo", sc.encode(message));
     console.log(`published modify: ${message}`);
   } catch (err) {

@@ -46,7 +46,7 @@ const main = async () => {
   app.post("/api/todos", async (req, res) => {
     try {
       const todo = await Todo.create(req.body);
-      await publishAddTodo(todo.toJSON());
+      await publishAddTodo(todo);
       res.status(201).send(todo);
       return;
     } catch (err) {
