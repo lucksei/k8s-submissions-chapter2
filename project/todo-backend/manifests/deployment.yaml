@@ -51,6 +51,12 @@ spec:
                 secretKeyRef:
                   key: DATABASE_URI
                   name: todo-backend-secret
+            - name: NATS_URI
+              valueFrom:
+                secretKeyRef:
+                  key: NATS_URI
+                  name: todo-backend-secret
+
         # # NOTE: Uncomment to use Cloud SQL Proxy
         # - name: cloud-sql-proxy
         #   image: gcr.io/cloud-sql-connectors/cloud-sql-proxy:2.14.1

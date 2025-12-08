@@ -17,6 +17,9 @@ resources:
   - ./todo-backend/manifests/service.yaml
   - ./todo-backend/manifests/backupsCronJob.yaml
 
+  # Todo Broadcaster
+  - ./todo-broadcaster/manifests/deployment.yaml
+
   # Todo App
   - ./todo-app/manifests/configMap.yaml
   - ./todo-app/manifests/secret.yaml

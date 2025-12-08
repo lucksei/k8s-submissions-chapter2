@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-broadcaster
+  namespace: project
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-broadcaster
+  template:
+    metadata:
+      labels:
+        app: todo-broadcaster
+    spec:
+      containers:
+        - name: todo-broadcaster
+          image: lucksei/todo-broadcaster:latest
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"
+          env:
+            - name: NATS_URI 
+              valueFrom:
+                secretKeyRef:
+                  name: todo-backend-secret
+                  key: NATS_URI

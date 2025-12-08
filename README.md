@@ -1316,3 +1316,21 @@ Installing Argo Rollouts
 kubectl create namespace argo-rollouts
 kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
 ```
+
+### 4.6.
+
+Installed the official NATS messaging system (Bitnami one was failing when pulling images). https://artifacthub.io/packages/helm/nats/nats
+
+```sh
+kubectl create namespace nats
+helm repo add nats https://nats-io.github.io/k8s/helm/charts/
+helm install my-nats nats/nats --version 2.12.2 --namespace nats
+```
+
+To access the NATS dashboard, run
+
+```sh
+kubectl port-forward --namespace nats svc/my-nats-headless 8222:8222
+```
+
+NATS can be accessed via port 4222 on the following DNS name from within your cluster: `my-nats.nats.svc.cluster.local`
