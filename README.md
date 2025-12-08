@@ -1335,3 +1335,7 @@ kubectl port-forward --namespace nats svc/my-nats-headless 8222:8222
 ```
 
 NATS can be accessed via port 4222 on the following DNS name from within your cluster: `my-nats.nats.svc.cluster.local`
+
+I used Discord webhooks to test out the subscriber, i used [Discord.js](https://discordjs.guide/legacy/popular-topics/webhooks) to connect and send the messages.
+
+For embeds i used this guide [here](https://discordjs.guide/legacy/popular-topics/embeds)
