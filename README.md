@@ -48,6 +48,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [4.3. Prometheus](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.3)
   - [4.4. Your canary](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.4/exercises)
   - [4.5. The project, step 22](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.5/project)
+  - [4.6. The project, step 23](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.6/project)
 
 ## Exercise notes
 
@@ -1317,7 +1318,7 @@ kubectl create namespace argo-rollouts
 kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
 ```
 
-### 4.6.
+### 4.6. The project, step 23
 
 Installed the official NATS messaging system (Bitnami one was failing when pulling images). https://artifacthub.io/packages/helm/nats/nats
 
