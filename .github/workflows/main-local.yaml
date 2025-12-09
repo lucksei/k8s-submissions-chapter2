@@ -9,7 +9,7 @@ env:
   # TODO
 
 jobs:
-  build-and-publish:
+  build-and-publish-project:
     name: Build & Publish to Docker Hub
     runs-on: ubuntu-latest
 
@@ -63,6 +63,7 @@ jobs:
       
       - name: 'Use the right image'
         run: |
+          cd project
           kustomize edit set image lucksei/todo-app=lucksei/todo-app:${{ env.BRANCH }}-${{ env.GITHUB_SHA }}
           kustomize edit set image lucksei/todo-backend=lucksei/todo-backend:${{ env.BRANCH }}-${{ env.GITHUB_SHA }}
           kustomize edit set image lucksei/todo-broadcaster=lucksei/todo-broadcaster:${{ env.BRANCH }}-${{ env.GITHUB_SHA }}
@@ -70,5 +71,5 @@ jobs:
       - name: Add & Commit
         uses: EndBug/add-and-commit@v9.1.4
         with:
-          add: 'kustomization.yaml'
+          add: 'project/kustomization.yaml'
           message: New version released ${{ github.sha }}
