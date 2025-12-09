@@ -1,9 +1,14 @@
 const Footer = () => {
   return (
-    <footer className="fixed bottom-0 py-0.5 w-full bg-gray-400">
-      <p className="text-center m-0 p-0 text-sm">
-        DevOps with Kubernetes 2025{' '}
-        <a href="https://github.com/lucksei">github/lucksei</a>
+    <footer className="fixed bottom-0 py-0.5 w-full bg-gray-800">
+      <p className="text-center m-0 p-0 text-sm text-white font-semibold">
+        DevOps with Kubernetes 2025{" "}
+        <a
+          className="underline text-blue-400 visited:text-purple-400"
+          href="https://github.com/lucksei"
+        >
+          github/lucksei
+        </a>
       </p>
     </footer>
   );
