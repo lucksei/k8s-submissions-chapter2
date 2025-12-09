@@ -1339,3 +1339,38 @@ NATS can be accessed via port 4222 on the following DNS name from within your cl
 I used Discord webhooks to test out the subscriber, i used [Discord.js](https://discordjs.guide/legacy/popular-topics/webhooks) to connect and send the messages.
 
 For embeds i used this guide [here](https://discordjs.guide/legacy/popular-topics/embeds)
+
+#### Important Update.
+
+I did not try the deployment with multiple replicas of `todo-broadcaster`. Found out later that its sending multiple messages when it should be consumed by one broadcaster only. NATS allows this using [queue groups](https://docs.nats.io/nats-concepts/core-nats/queue/queues_walkthrough).
+
+> NATS supports a form of load balancing using queue groups. Subscribers register a queue group name. A single subscriber in the group is randomly selected to receive the message.
+
+Once all the subscribers are registered to the same queue group, only one of them will receive the message.
+
+### 4.7.
+
+Installing ArgoCD in the cluster [Getting Started](https://argo-cd.readthedocs.io/en/stable/getting_started/)
+
+```sh
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
+
+(Optional) Install ArgoCD Cli
+
+```sh
+brew install argocd
+```
+
+By default, the Argo CD API server is not exposed. For a cloud deployment, you could use the LoadBalancer like
+
+```sh
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+```
+
+In K3d I just port-forwarded the service
+
+```sh
+kubectl port-forward svc/argocd-server -n argocd 8443:443
+```

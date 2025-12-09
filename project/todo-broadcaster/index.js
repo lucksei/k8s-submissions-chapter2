@@ -20,7 +20,7 @@ const main = async () => {
     console.log(`connected to ${nc.getServer()}`);
 
     // Subscribe to the 'todo' subject and print messages to console
-    const sub = nc.subscribe("todo", {});
+    const sub = nc.subscribe("todo", { queue: "todo-broadcaster" });
     console.log("Subscribed to todo. Waiting for messages...");
 
     for await (const m of sub) {

@@ -6,7 +6,7 @@ const sc = StringCodec();
 
 const connectToNats = async () => {
   try {
-    nc = await connect({ servers: config.natsUri });
+    nc = await connect({ servers: config.natsUri, name: "todo-backend" });
     console.log(`connected to ${nc.getServer()}`);
   } catch (err) {
     console.error(`error connecting to ${config.natsUri}: ${err}`);
