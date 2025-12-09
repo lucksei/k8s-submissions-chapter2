@@ -29,7 +29,7 @@ jobs:
       - name: 'Build and push "log-output-container0"'
         uses: docker/build-push-action@v6
         with:
-          context: ./exercises/log-output-container0
+          context: ./exercises/log-output
           file: ./exercises/log-output/Dockerfile.container0
           push: true
           tags: "lucksei/log-output-container0:${{ env.BRANCH }}-${{ env.GITHUB_SHA }}"
@@ -37,7 +37,7 @@ jobs:
       - name: 'Build and push "log-output-container1"'
         uses: docker/build-push-action@v6
         with:
-          context: ./exercises/log-output-container1
+          context: ./exercises/log-output
           file: ./exercises/log-output/Dockerfile.container1
           push: true
           tags: "lucksei/log-output-container1:${{ env.BRANCH }}-${{ env.GITHUB_SHA }}"
