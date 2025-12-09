@@ -4,7 +4,7 @@ const Footer = () => {
       <p className="text-center m-0 p-0 text-sm text-white font-semibold">
         DevOps with Kubernetes 2025{" "}
         <a
-          className="underline text-blue-400 visited:text-purple-400"
+          className="underline text-blue-500 visited:text-purple-500"
           href="https://github.com/lucksei"
         >
           github/lucksei

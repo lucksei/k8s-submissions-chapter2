@@ -1,19 +1,11 @@
 @import 'tailwindcss';
 
-* {
-  @apply text-gray-800;
-}
-
 h1 {
-  @apply font-serif text-4xl mb-3 font-semibold underline underline-offset-4;
+  @apply text-gray-800 font-serif text-4xl mb-3 font-semibold underline underline-offset-4;
 }
 
 h2 {
-  @apply font-serif text-3xl mb-3 font-semibold;
-}
-
-a {
-  @apply underline text-blue-600 visited:text-purple-600;
+  @apply text-gray-800 font-serif text-3xl mb-3 font-semibold;
 }
 
 input[type='text'] {

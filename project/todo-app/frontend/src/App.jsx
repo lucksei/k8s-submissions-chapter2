@@ -48,7 +48,7 @@ const App = () => {
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center pb-20">
+      <div className="flex flex-col justify-center items-center pb-20 text-gray-800">
         <div className="flex flex-col max-w-300 w-full px-3 mt-5 ">
           <h1>The Project</h1>
           <img

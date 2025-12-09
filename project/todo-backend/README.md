@@ -36,3 +36,7 @@ docker run --rm -d -p 5432:5432 --name todo-backend-postgres \
  -e POSTGRES_DB=todo \
  postgres:15.15-alpine3.22
 ```
+
+```sh
+npm run dev
+```
