@@ -29,10 +29,10 @@ resources:
 images:
 - name: lucksei/todo-app
   newName: lucksei/todo-app
-  newTag: main-4bf7ed52ac428baec920a7e2bf19d2b8b5485cac
+  newTag: main-f8b9e7e76b8e5b6beeeec7ade8d3cb01202f6281
 - name: lucksei/todo-backend
   newName: lucksei/todo-backend
-  newTag: main-4bf7ed52ac428baec920a7e2bf19d2b8b5485cac
+  newTag: main-f8b9e7e76b8e5b6beeeec7ade8d3cb01202f6281
 - name: lucksei/todo-broadcaster
   newName: lucksei/todo-broadcaster
-  newTag: main-4bf7ed52ac428baec920a7e2bf19d2b8b5485cac
+  newTag: main-f8b9e7e76b8e5b6beeeec7ade8d3cb01202f6281
