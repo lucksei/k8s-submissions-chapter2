@@ -27,6 +27,12 @@ resources:
 - ./todo-app/manifests/deployment.yaml
 - ./todo-app/manifests/service.yaml
 images:
+- name: lucksei/log-output-container0
+  newName: lucksei/log-output-container0
+  newTag: main-6884e76d4ef64855f16e0cc14804588f24cc3088
+- name: lucksei/log-output-container1
+  newName: lucksei/log-output-container1
+  newTag: main-6884e76d4ef64855f16e0cc14804588f24cc3088
 - name: lucksei/todo-app
   newName: lucksei/todo-app
   newTag: main-dab0ba43dcc2cc295a36b3760de12d68a8167ab1
