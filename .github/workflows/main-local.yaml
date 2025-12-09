@@ -5,6 +5,7 @@ on:
 
 env: 
   BRANCH: ${{ github.ref_name }}
+  GITHUB_SHA: ${{ github.sha }}
   # TODO
 
 jobs:
@@ -39,7 +40,7 @@ jobs:
           context: ./project/todo-app
           file: ./project/todo-app/Dockerfile
           push: true
-          tags: lucksei/todo-app:$BRANCH-$GITHUB_SHA
+          tags: "lucksei/todo-app:${{ env.BRANCH }}-${{ env.GITHUB_SHA }}"
       
       - name: 'Build and push "todo-backend"'
         uses: docker/build-push-action@v6
@@ -47,7 +48,7 @@ jobs:
           context: ./project/todo-backend
           file: ./project/todo-backend/Dockerfile
           push: true
-          tags: lucksei/todo-backend:$BRANCH-$GITHUB_SHA
+          tags: "lucksei/todo-backend:${{ env.BRANCH }}-${{ env.GITHUB_SHA }}"
       
       - name: 'Build and push "todo-broadcaster"'
         uses: docker/build-push-action@v6
@@ -55,16 +56,16 @@ jobs:
           context: ./project/todo-broadcaster
           file: ./project/todo-broadcaster/Dockerfile
           push: true
-          tags: lucksei/todo-broadcaster:$BRANCH-$GITHUB_SHA
+          tags: "lucksei/todo-broadcaster:${{ env.BRANCH }}-${{ env.GITHUB_SHA }}"
 
       - name: Set up Kustomize
         uses: imranismail/setup-kustomize@v2.1.0
       
       - name: 'Use the right image'
         run: |
-          kustomize edit set image lucksei/todo-app=lucksei/todo-app:$BRANCH-$GITHUB_SHA
-          kustomize edit set image lucksei/todo-backend=lucksei/todo-backend:$BRANCH-$GITHUB_SHA
-          kustomize edit set image lucksei/todo-broadcaster=lucksei/todo-broadcaster:$BRANCH-$GITHUB_SHA
+          kustomize edit set image lucksei/todo-app=lucksei/todo-app:${{ env.BRANCH }}-${{ env.GITHUB_SHA }}
+          kustomize edit set image lucksei/todo-backend=lucksei/todo-backend:${{ env.BRANCH }}-${{ env.GITHUB_SHA }}
+          kustomize edit set image lucksei/todo-broadcaster=lucksei/todo-broadcaster:${{ env.BRANCH }}-${{ env.GITHUB_SHA }}
         
       - name: Add & Commit
         uses: EndBug/add-and-commit@v9.1.4
