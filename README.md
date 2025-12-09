@@ -49,6 +49,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [4.4. Your canary](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.4/exercises)
   - [4.5. The project, step 22](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.5/project)
   - [4.6. The project, step 23](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.6/project)
+  - [4.7. Baby steps to GitOps](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.7/project)
 
 ## Exercise notes
 
@@ -1382,3 +1383,5 @@ kubectl get secret argocd-initial-admin-secret --namespace argocd -o json | jq -
 ```
 
 Click on 'New App'
+
+- `todo-app`
