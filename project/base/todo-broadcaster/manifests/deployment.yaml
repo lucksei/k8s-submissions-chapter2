@@ -27,10 +27,10 @@ spec:
             - name: NATS_URI 
               valueFrom:
                 secretKeyRef:
-                  name: todo-backend-secret
+                  name: todo-broadcaster-secret
                   key: NATS_URI
             - name: DISCORD_WEBHOOK_URL
               valueFrom:
                 secretKeyRef:
-                  name: todo-backend-secret
+                  name: todo-broadcaster-secret
                   key: DISCORD_WEBHOOK_URL

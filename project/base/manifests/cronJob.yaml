@@ -10,9 +10,9 @@ spec:
       template:
         spec:
           volumes:
-            - name: todo-project-cm
+            - name: todo-project-configmap
               configMap:
-                name: todo-project-cm
+                name: todo-project-configmap
           containers:
             - name: todo-job
               image: alpine/curl:latest
@@ -27,7 +27,7 @@ spec:
                   memory: "64Mi"
                   cpu: "100m"
               volumeMounts:
-                - name: todo-project-cm
+                - name: todo-project-configmap
                   mountPath: /scripts/todo_job.sh
                   subPath: cron_job.sh
                   readOnly: true

@@ -48,5 +48,5 @@ spec:
               cpu: "100m"
           envFrom:
             - configMapRef:
-                name: todo-app-cm
+                name: todo-app-configmap
 status: {}

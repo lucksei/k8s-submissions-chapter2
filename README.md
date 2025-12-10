@@ -1430,3 +1430,60 @@ syncPolicy:
   automated:
     enabled: true
 ```
+
+### 4.9. The project, step 25
+
+Restructured project to use Multibase to deploy to different namespaces with ArgoCD. Decoupled configurations into their own directory, using `base` as the main configs, then `overlays/production` and `overlays/staging` for production and staging environments.
+
+```
+project/base
+├── kustomization.yaml
+├── manifests
+│   ├── application.yaml
+│   ├── configMap.yaml
+│   ├── cronJob.yaml
+│   └── gateway.yaml
+├── todo-app
+│   └── manifests
+│       ├── configMap.yaml
+│       ├── deployment.yaml
+│       ├── persistentVolumeClaim.yaml
+│       ├── secret.yaml
+│       └── service.yaml
+├── todo-backend
+│   └── manifests
+│       ├── backupsCronJob.yaml
+│       ├── configMap.yaml
+│       ├── database.yaml
+│       ├── deployment.yaml
+│       ├── secret.yaml
+│       └── service.yaml
+└── todo-broadcaster
+    └── manifests
+        ├── deployment.yaml
+        └── secret.yaml
+```
+
+#### Cheatsheet for deploying again
+
+```sh
+k3d cluster create my-cluster\
+  --port 8080:80@loadbalancer \
+  --port 8443:443@loadbalancer \
+  --k3s-arg "--disable=traefik@server:*" \
+  --agents 1
+```
+
+Install the Gateway API from kubernetes-sigs and the NGINX Gateway Fabric
+
+```sh
+kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml
+helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric --create-namespace -n nginx-gateway --wait
+```
+
+Installing ArgoCD in the cluster [Getting Started](https://argo-cd.readthedocs.io/en/stable/getting_started/)
+
+```sh
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
