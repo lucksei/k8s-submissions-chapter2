@@ -20,7 +20,7 @@ resources:
 images:
 - name: lucksei/log-output-container0
   newName: lucksei/log-output-container0
-  newTag: main-ded4a97251c895a931aa6ed6bfd8e1fe2c1e65be
+  newTag: main-76d5a6fa7ce9abfbc003f193195713fe891ee4fe
 - name: lucksei/log-output-container1
   newName: lucksei/log-output-container1
-  newTag: main-ded4a97251c895a931aa6ed6bfd8e1fe2c1e65be
+  newTag: main-76d5a6fa7ce9abfbc003f193195713fe891ee4fe
