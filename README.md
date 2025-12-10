@@ -1390,6 +1390,9 @@ source:
   targetRevision: HEAD
 destination:
   server: https://kubernetes.default.svc
+syncPolicy:
+  automated:
+    enabled: true
 ```
 
 ### 4.8. The project, step 24
