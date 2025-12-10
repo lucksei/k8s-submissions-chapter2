@@ -6,9 +6,56 @@ on:
 env: 
   BRANCH: ${{ github.ref_name }}
   GITHUB_SHA: ${{ github.sha }}
-  # TODO
 
 jobs:
+  build-and-publish-exercises:
+    name: Build & Publish to Docker Hub
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      
+      - name: 'Login to Docker Hub'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: 'Set up Docker Buildx'
+        uses: docker/setup-buildx-action@v3
+      
+      - name: 'Build and push "log-output-container0"'
+        uses: docker/build-push-action@v6
+        with:
+          context: ./exercises/log-output
+          file: ./exercises/log-output/Dockerfile.container0
+          push: true
+          tags: "lucksei/log-output-container0:${{ env.BRANCH }}-${{ env.GITHUB_SHA }}"
+
+      - name: 'Build and push "log-output-container1"'
+        uses: docker/build-push-action@v6
+        with:
+          context: ./exercises/log-output
+          file: ./exercises/log-output/Dockerfile.container1
+          push: true
+          tags: "lucksei/log-output-container1:${{ env.BRANCH }}-${{ env.GITHUB_SHA }}"
+
+      - name: Set up Kustomize
+        uses: imranismail/setup-kustomize@v2.1.0
+      
+      - name: 'Use the right image'
+        run: |
+          cd exercises
+          kustomize edit set image lucksei/log-output-container0=lucksei/log-output-container0:${{ env.BRANCH }}-${{ env.GITHUB_SHA }}
+          kustomize edit set image lucksei/log-output-container1=lucksei/log-output-container1:${{ env.BRANCH }}-${{ env.GITHUB_SHA }}
+        
+      - name: Add & Commit
+        uses: EndBug/add-and-commit@v9.1.4
+        with:
+          add: 'exercises/kustomization.yaml'
+          message: New version released ${{ github.sha }}
+
   build-and-publish-project:
     name: Build & Publish to Docker Hub
     runs-on: ubuntu-latest
