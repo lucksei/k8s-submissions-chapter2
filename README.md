@@ -1352,11 +1352,9 @@ Once all the subscribers are registered to the same queue group, only one of the
 
 ### 4.7. Baby steps to GitOps
 
-> **IMPORTANT NOTE**: I misread the instruction and implemented GitOps first on the "project", the exercise said to do "log-output" first. I'm sorry for the confusion. Therefore this part is basically the full "project" work, copy and pasted and modified to work with the "exercises/log-output". Since most of the work and instructions are the same, i left all on 4.8 since its there where I made all the changes and tests. This section is for reference only.
+> **IMPORTANT NOTE**: I misread the instruction and implemented GitOps first on the "project", the exercise said to do "log-output" first. I'm sorry for the confusion. Therefore this part is basically the full "project" work, copy and pasted and modified to work with the "exercises/log-output". Because most of the work and instructions are the same, i left all documentation on 4.8 since it's where I made all the changes and tested everything. This section is for reference only. But all requirements for 4.7 are met.
 
 ### 4.8. The project, step 24
-
-> **IMPORTANT NOTE**: I missread the instruction and implemented GitOps first on the "project", the exercise said to do "log-output" first. I'm sorry for the confusion.
 
 Installing ArgoCD in the cluster [Getting Started](https://argo-cd.readthedocs.io/en/stable/getting_started/)
 
