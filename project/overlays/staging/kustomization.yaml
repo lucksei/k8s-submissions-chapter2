@@ -5,8 +5,6 @@ namespace: staging
 
 resources:
 - ../../base
-- manifests/application.yaml
-namePrefix: staging-
 images:
 - name: lucksei/todo-app
   newName: lucksei/todo-app

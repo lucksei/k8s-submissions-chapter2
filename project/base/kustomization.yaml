@@ -19,5 +19,3 @@ resources:
 - ./todo-app/manifests/persistentVolumeClaim.yaml
 - ./todo-app/manifests/deployment.yaml
 - ./todo-app/manifests/service.yaml
-
-namePrefix: prod-

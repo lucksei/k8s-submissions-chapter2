@@ -5,6 +5,3 @@ namespace: production
 
 resources: 
   - ../../base
-  - manifests/application.yaml
-
-namePrefix: prod-
