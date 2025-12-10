@@ -9,7 +9,7 @@ env:
   # TODO
 
 jobs:
-  build-and-publish-project:
+  build-and-publish-exercises:
     name: Build & Publish to Docker Hub
     runs-on: ubuntu-latest
 
@@ -47,12 +47,12 @@ jobs:
       
       - name: 'Use the right image'
         run: |
-          cd project
+          cd exercises
           kustomize edit set image lucksei/log-output-container0=lucksei/log-output-container0:${{ env.BRANCH }}-${{ env.GITHUB_SHA }}
           kustomize edit set image lucksei/log-output-container1=lucksei/log-output-container1:${{ env.BRANCH }}-${{ env.GITHUB_SHA }}
         
       - name: Add & Commit
         uses: EndBug/add-and-commit@v9.1.4
         with:
-          add: 'project/kustomization.yaml'
+          add: 'exercises/kustomization.yaml'
           message: New version released ${{ github.sha }}
