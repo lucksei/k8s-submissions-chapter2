@@ -3,17 +3,24 @@ kind: Kustomization
 
 namespace: exercises
 
-resources:
   # Exercises Level
-  - ./manifests/gateway.yaml
   
   # Ping-Pong App
-  - ./pingpong/manifests/analysisTemplate.yaml
-  - ./pingpong/manifests/database.yaml
-  - ./pingpong/manifests/deployment.yaml
-  - ./pingpong/manifests/service.yaml
 
   # Log Output App
-  - ./log-output/manifests/configMap.yaml
-  - ./log-output/manifests/deployment.yaml
-  - ./log-output/manifests/service.yaml
+resources:
+- ./manifests/gateway.yaml
+- ./pingpong/manifests/analysisTemplate.yaml
+- ./pingpong/manifests/database.yaml
+- ./pingpong/manifests/deployment.yaml
+- ./pingpong/manifests/service.yaml
+- ./log-output/manifests/configMap.yaml
+- ./log-output/manifests/deployment.yaml
+- ./log-output/manifests/service.yaml
+images:
+- name: lucksei/log-output-container0
+  newName: lucksei/log-output-container0
+  newTag: main-ded4a97251c895a931aa6ed6bfd8e1fe2c1e65be
+- name: lucksei/log-output-container1
+  newName: lucksei/log-output-container1
+  newTag: main-ded4a97251c895a931aa6ed6bfd8e1fe2c1e65be
