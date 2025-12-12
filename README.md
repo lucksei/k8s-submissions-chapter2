@@ -1472,7 +1472,9 @@ k3d cluster create my-cluster\
   --port 8080:80@loadbalancer \
   --port 8443:443@loadbalancer \
   --k3s-arg "--disable=traefik@server:*" \
-  --agents 4
+  --agents-memory 4G \
+  --servers-memory 4G \
+  --agents 2
 ```
 
 Install the Gateway API from kubernetes-sigs and the NGINX Gateway Fabric
@@ -1500,5 +1502,19 @@ helm install my-nats nats/nats --version 2.12.2 --namespace nats
 Deploy the applications for 'Production' and 'Staging'
 
 ```sh
-kubectl apply -f project/manifest/application.yaml
+kubectl create namespace staging
+kubectl create namespace production
+kubectl apply -f project/manifests/application.yaml
+```
+
+Expose the API server for ArgoCD
+
+```sh
+kubectl port-forward svc/argocd-server -n argocd 9443:443
+```
+
+Get the secret for the admin user
+
+```sh
+kubectl get secret argocd-initial-admin-secret --namespace argocd -o json | jq -r .data.password | base64 -d
 ```

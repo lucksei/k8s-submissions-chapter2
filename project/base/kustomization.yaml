@@ -12,6 +12,7 @@ resources:
 - ./todo-backend/manifests/database.yaml
 - ./todo-backend/manifests/deployment.yaml
 - ./todo-backend/manifests/service.yaml
+- ./todo-broadcaster/manifests/configMap.yaml
 - ./todo-broadcaster/manifests/secret.yaml
 - ./todo-broadcaster/manifests/deployment.yaml
 - ./todo-app/manifests/configMap.yaml
