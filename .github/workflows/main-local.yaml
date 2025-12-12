@@ -65,4 +65,4 @@ jobs:
         with:
           add: 'project/overlays/staging/kustomization.yaml'
           message: New version released ${{ github.sha }}
-          pull: '--rebase origin main'
+          pull: '--rebase --autostash origin ${{ env.BRANCH }}'
