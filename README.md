@@ -51,6 +51,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [4.6. The project, step 23](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.6/project)
   - [4.7. Baby steps to GitOps](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.7/exercises/log-output)
   - [4.8. The project, step 24](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.8/project)
+  - [4.9. The project, step 25](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.9/project)
 
 ## Exercise notes
 
@@ -1439,7 +1440,6 @@ Restructured project to use Multibase to deploy to different namespaces with Arg
 project/base
 ├── kustomization.yaml
 ├── manifests
-│   ├── application.yaml
 │   ├── configMap.yaml
 │   ├── cronJob.yaml
 │   └── gateway.yaml
@@ -1458,10 +1458,11 @@ project/base
 │       ├── deployment.yaml
 │       ├── secret.yaml
 │       └── service.yaml
-└── todo-broadcaster
-    └── manifests
-        ├── deployment.yaml
-        └── secret.yaml
+├── todo-broadcaster
+│   └── manifests
+│       ├── deployment.yaml
+│       └── secret.yaml
+└── todo_job.sh
 ```
 
 #### Cheatsheet for deploying again
