@@ -2,8 +2,6 @@ name: Release application locally (Production)
 
 on:
   push:
-    branches: 
-      - main
     tags: 
       - '*'
 
