@@ -3,6 +3,7 @@ name: Release application locally (Staging)
 on:
   push:
     branches: [ main ]
+    tags: ['*']
 
 env: 
   BRANCH: ${{ github.ref_name }}
@@ -61,6 +62,7 @@ jobs:
           kustomize edit set image lucksei/todo-broadcaster=lucksei/todo-broadcaster:${{ env.BRANCH }}-${{ env.GITHUB_SHA }}
 
       - name: 'Use the right image in production'
+        if: ${{ github.ref_type == 'tag'}}
         run: |
           cd project/overlays/production
           kustomize edit set image lucksei/todo-app=lucksei/todo-app:${{ env.BRANCH }}-${{ env.GITHUB_SHA }}
