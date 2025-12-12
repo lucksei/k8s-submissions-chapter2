@@ -1471,7 +1471,7 @@ k3d cluster create my-cluster\
   --port 8080:80@loadbalancer \
   --port 8443:443@loadbalancer \
   --k3s-arg "--disable=traefik@server:*" \
-  --agents 1
+  --agents 4
 ```
 
 Install the Gateway API from kubernetes-sigs and the NGINX Gateway Fabric
@@ -1486,4 +1486,10 @@ Installing ArgoCD in the cluster [Getting Started](https://argo-cd.readthedocs.i
 ```sh
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+```
+
+Deploy the applications for 'Production' and 'Staging'
+
+```sh
+kubectl apply -f project/manifest/application.yaml
 ```
