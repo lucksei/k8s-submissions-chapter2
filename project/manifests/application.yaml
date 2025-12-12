@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/lucksei/k8s-submissions-chapter2
     path: project/overlays/production
-    targetRevision: HEAD
+    targetRevision: refs/tags/* 
   destination:
     server: https://kubernetes.default.svc
   syncPolicy:
