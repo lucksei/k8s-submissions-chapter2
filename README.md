@@ -1518,3 +1518,9 @@ Get the secret for the admin user
 ```sh
 kubectl get secret argocd-initial-admin-secret --namespace argocd -o json | jq -r .data.password | base64 -d
 ```
+
+Test out staging
+
+```sh
+kubectl port-forward svc/project-gateway -n staging 8080:81
+```

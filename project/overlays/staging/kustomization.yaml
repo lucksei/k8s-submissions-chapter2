@@ -6,8 +6,8 @@ namespace: staging
 resources:
 - ../../base
 patches:
-- ./manifests/gateway.yaml
-- ./todo-broadcaster/manifests/configMap.yaml
+- path: ./manifests/gateway.yaml
+- path: ./todo-broadcaster/manifests/configMap.yaml
 images:
 - name: lucksei/todo-app
   newName: lucksei/todo-app
