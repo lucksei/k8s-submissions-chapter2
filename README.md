@@ -1489,6 +1489,14 @@ kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 ```
 
+Run nats messaging
+
+```sh
+kubectl create namespace nats
+helm repo add nats https://nats-io.github.io/k8s/helm/charts/
+helm install my-nats nats/nats --version 2.12.2 --namespace nats
+```
+
 Deploy the applications for 'Production' and 'Staging'
 
 ```sh
