@@ -27,7 +27,7 @@ const main = async () => {
 
     for await (const m of sub) {
       const message = JSON.parse(sc.decode(m.data));
-      console.log(`[${sub.getProcessed()}]: ${message}`);
+      console.log(`[${sub.getProcessed()}]: ${message.todo.todo}`);
 
       if (config.forwardsToDiscord) {
         // Create an embed

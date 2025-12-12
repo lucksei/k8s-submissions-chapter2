@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: todo-broadcaster-configmap
 data:
-  FORWARD_TO_DISCORD: "true"
+  FORWARDS_TO_DISCORD: "true"
