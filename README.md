@@ -1522,5 +1522,5 @@ kubectl get secret argocd-initial-admin-secret --namespace argocd -o json | jq -
 Test out staging
 
 ```sh
-kubectl port-forward svc/project-gateway -n staging 8080:81
+kubectl port-forward svc/project-gateway-nginx -n staging 8081:81
 ```

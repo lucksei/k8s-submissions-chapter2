@@ -7,6 +7,8 @@ const config = {
   // port: process.env.PORT || 3002, // TODO: For adding a health check later...
   natsUri: process.env.NATS_URI || "",
   discordWebhookUrl: process.env.DISCORD_WEBHOOK_URL || "",
+  forwardsToDiscord:
+    process.env.FORWARDS_TO_DISCORD === "true" ? true : false || false,
 };
 
 // Discord webhook connection
@@ -27,30 +29,32 @@ const main = async () => {
       const message = JSON.parse(sc.decode(m.data));
       console.log(`[${sub.getProcessed()}]: ${message}`);
 
-      // Create an embed
-      const customEmbed = new EmbedBuilder(message);
-      customEmbed.addFields({
-        name: "Json content",
-        value: `\`\`\`json\n${JSON.stringify(message, null, 2)}\n\`\`\``,
-        inline: true,
-      });
-      switch (message.type) {
-        case "add":
-          customEmbed.setColor(0x00ff00);
-          customEmbed.setTitle("Added todo");
-          break;
-        case "modify":
-          customEmbed.setColor(0xffff00);
-          customEmbed.setTitle("Modified todo");
-          break;
-      }
+      if (config.forwardsToDiscord) {
+        // Create an embed
+        const customEmbed = new EmbedBuilder(message);
+        customEmbed.addFields({
+          name: "Json content",
+          value: `\`\`\`json\n${JSON.stringify(message, null, 2)}\n\`\`\``,
+          inline: true,
+        });
+        switch (message.type) {
+          case "add":
+            customEmbed.setColor(0x00ff00);
+            customEmbed.setTitle("Added todo");
+            break;
+          case "modify":
+            customEmbed.setColor(0xffff00);
+            customEmbed.setTitle("Modified todo");
+            break;
+        }
 
-      // Send a message to Discord
-      webhookClient.send({
-        content: `Todo: '_${message.todo.todo}_'`,
-        username: "Todo NATS Broadcaster",
-        embeds: [customEmbed],
-      });
+        // Send a message to Discord
+        webhookClient.send({
+          content: `Todo: '${message.todo.todo}'`,
+          username: "Todo NATS Broadcaster",
+          embeds: [customEmbed],
+        });
+      }
     }
   } catch (err) {
     console.error(`error connecting to ${config.natsUri}: ${err}`);

@@ -5,6 +5,8 @@ namespace: production
 
 resources:
 - ../../base
+patches:
+- path: ./todo-backend/manifests/backupsCronJob.yaml
 images:
 - name: lucksei/todo-app
   newName: lucksei/todo-app
