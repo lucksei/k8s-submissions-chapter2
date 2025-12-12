@@ -2,7 +2,8 @@ name: Release application locally (Production)
 
 on:
   push:
-    tags: ['**']
+    branches: [ main ]
+    tags: ['*']
 
 env: 
   BRANCH: ${{ github.ref_name }}
