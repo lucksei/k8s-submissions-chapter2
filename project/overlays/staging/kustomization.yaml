@@ -11,10 +11,10 @@ patches:
 images:
 - name: lucksei/todo-app
   newName: lucksei/todo-app
-  newTag: main-e658aae7a378c899f2b3a7fabe9b50c8784c6a29
+  newTag: main-cc39dd6f4df634a55b80d95ebc5608de749a9724
 - name: lucksei/todo-backend
   newName: lucksei/todo-backend
-  newTag: main-e658aae7a378c899f2b3a7fabe9b50c8784c6a29
+  newTag: main-cc39dd6f4df634a55b80d95ebc5608de749a9724
 - name: lucksei/todo-broadcaster
   newName: lucksei/todo-broadcaster
-  newTag: main-e658aae7a378c899f2b3a7fabe9b50c8784c6a29
+  newTag: main-cc39dd6f4df634a55b80d95ebc5608de749a9724
