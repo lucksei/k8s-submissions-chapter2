@@ -34,8 +34,8 @@ spec:
                 secretKeyRef:
                   name: todo-broadcaster-secret
                   key: DISCORD_WEBHOOK_URL
-            - name: FORWARD_TO_DISCORD
+            - name: FORWARDS_TO_DISCORD
               valueFrom:
                 configMapKeyRef:
                   name: todo-broadcaster-configmap
-                  key: FORWARD_TO_DISCORD
+                  key: FORWARDS_TO_DISCORD
