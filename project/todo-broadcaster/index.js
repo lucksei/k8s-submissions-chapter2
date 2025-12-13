@@ -1,6 +1,5 @@
 const { connect, StringCodec } = require("nats");
 const { WebhookClient, EmbedBuilder, inlineCode } = require("discord.js");
-
 require("dotenv").config();
 
 const config = {
