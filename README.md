@@ -1524,3 +1524,12 @@ Test out staging
 ```sh
 kubectl port-forward svc/project-gateway-nginx -n staging 8081:81
 ```
+
+### 4.10. The project, the grande finale
+
+For the final part of the project. I split it up into two separate repositories.
+
+- Codebase: https://github.com/lucksei/dwk-the-project-codebase
+- Configurations: https://github.com/lucksei/dwk-the-project-configurations
+
+Added a PAT token that allows me to push changes to the kustomization.yaml files from the codebase repository. This triggers a new deployment inside ArgoCD which is always in sync with HEAD.
