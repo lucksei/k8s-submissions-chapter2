@@ -52,6 +52,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [4.7. Baby steps to GitOps](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.7/exercises/log-output)
   - [4.8. The project, step 24](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.8/project)
   - [4.9. The project, step 25](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.9/project)
+  - [4.10. The project, the grande finale](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.10/project)
 
 ## Exercise notes
 
@@ -1533,3 +1534,7 @@ For the final part of the project. I split it up into two separate repositories.
 - Configurations: https://github.com/lucksei/dwk-the-project-configurations
 
 Added a PAT token that allows me to push changes to the kustomization.yaml files from the codebase repository. This triggers a new deployment inside ArgoCD which is always in sync with HEAD.
+
+### 5.1.
+
+Example for in-cluster-client-configuration for the 'Go Dummy-Site Controller' [here](https://github.com/kubernetes/client-go/tree/master/examples/in-cluster-client-configuration)
