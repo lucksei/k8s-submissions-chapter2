@@ -6,7 +6,7 @@ from starlette.requests import Request
 import requests
 import uvicorn
 
-PORT = os.environ.get("PORT", 42069)
+PORT = os.environ.get("PORT", "42069")
 WEBSITE_URL = os.environ.get("WEBSITE_URL")
 
 # -----
@@ -48,5 +48,12 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"Failed to load website: {e}")
         exit(1)
-    print(f"Starting server on port {PORT}")
-    uvicorn.run(app, host="0.0.0.0", port=PORT)
+
+    port = 42069
+    try:
+        port = int(PORT)
+    except ValueError:
+        print(f"Failed to parse port: {PORT}. Defaulting to 42069")
+
+    print(f"Starting server on port {port}")
+    uvicorn.run(app, host="0.0.0.0", port=port)

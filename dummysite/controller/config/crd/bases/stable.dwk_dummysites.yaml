@@ -14,7 +14,20 @@ spec:
     singular: dummysite
   scope: Namespaced
   versions:
-  - name: v1
+  - additionalPrinterColumns:
+    - description: DummySite replicas
+      jsonPath: .status.replicas
+      name: Replicas
+      type: integer
+    - description: DummySite website url
+      jsonPath: .status.website_url
+      name: WebsiteUrl
+      type: string
+    - description: DummySite port
+      jsonPath: .status.port
+      name: Port
+      type: integer
+    name: v1
     schema:
       openAPIV3Schema:
         description: DummySite is the Schema for the dummysites API
@@ -127,6 +140,19 @@ spec:
                 x-kubernetes-list-map-keys:
                 - type
                 x-kubernetes-list-type: map
+              port:
+                description: Port shows the port where the site is exposed
+                format: int32
+                type: integer
+              replicas:
+                description: Replicas shows the current number of pods
+                format: int32
+                type: integer
+              website_url:
+                description: WebsiteUrl shows the original url of the website
+                type: string
+            required:
+            - website_url
             type: object
         required:
         - spec

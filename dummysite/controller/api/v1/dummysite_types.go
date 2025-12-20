@@ -63,10 +63,24 @@ type DummySiteStatus struct {
 	// +listMapKey=type
 	// +optional
 	Conditions []metav1.Condition `json:"conditions,omitempty"`
+
+	// WebsiteUrl shows the original url of the website
+	WebsiteUrl string `json:"website_url"`
+
+	// Replicas shows the current number of pods
+	// +optional
+	Replicas int32 `json:"replicas,omitempty"`
+
+	// Port shows the port where the site is exposed
+	// +optional
+	Port int32 `json:"port,omitempty"`
 }
 
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
+// +kubebuilder:printcolumn:name="Replicas",type="integer",JSONPath=".status.replicas",description="DummySite replicas"
+// +kubebuilder:printcolumn:name="WebsiteUrl",type="string",JSONPath=".status.website_url",description="DummySite website url"
+// +kubebuilder:printcolumn:name="Port",type="integer",JSONPath=".status.port",description="DummySite port"
 
 // DummySite is the Schema for the dummysites API
 type DummySite struct {

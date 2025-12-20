@@ -39,7 +39,9 @@ import (
 
 // Definitions to manage the status conditions
 const (
-	typeAvailableDummysite = "Available"
+	typeAvailableDummysite   = "Available"
+	typeProgressingDummysite = "Progressing"
+	typeDegradedDummysite    = "Degraded"
 )
 
 // DummySiteReconciler reconciles a DummySite object
@@ -84,7 +86,7 @@ func (r *DummySiteReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	// Start by setting the status as Unknown when no status is available
 	if len(dummysite.Status.Conditions) == 0 {
 		meta.SetStatusCondition(&dummysite.Status.Conditions, metav1.Condition{
-			Type:    typeAvailableDummysite,
+			Type:    typeProgressingDummysite,
 			Status:  metav1.ConditionUnknown,
 			Reason:  "Reconciling",
 			Message: "Starting reconciliation",
@@ -99,6 +101,11 @@ func (r *DummySiteReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		}
 	}
 
+	// Also set the WebsiteUrl, Port and Replicas for the status
+	dummysite.Status.WebsiteUrl = fmt.Sprintf("%s", dummysite.Spec.WebsiteUrl)
+	dummysite.Status.Port = *dummysite.Spec.Port
+	dummysite.Status.Replicas = *dummysite.Spec.Replicas
+
 	// Check if the service already exists, if not create a new one
 	foundService := &corev1.Service{}
 	err = r.Get(ctx, types.NamespacedName{Name: dummysite.Name, Namespace: dummysite.Namespace}, foundService)
@@ -110,7 +117,7 @@ func (r *DummySiteReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 			meta.SetStatusCondition(
 				&dummysite.Status.Conditions,
 				metav1.Condition{
-					Type:   typeAvailableDummysite,
+					Type:   typeDegradedDummysite,
 					Status: metav1.ConditionFalse, Reason: "Reconciling",
 					Message: fmt.Sprintf("Failed to create Service for the custom resource (%s): (%s)", dummysite.Name, err),
 				})
@@ -143,7 +150,7 @@ func (r *DummySiteReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 			log.Error(err, "Failed to define new Deployment resource for DummySite")
 			meta.SetStatusCondition(
 				&dummysite.Status.Conditions,
-				metav1.Condition{Type: typeAvailableDummysite,
+				metav1.Condition{Type: typeDegradedDummysite,
 					Status: metav1.ConditionFalse, Reason: "Reconciling",
 					Message: fmt.Sprintf("Failed to create Deployment for the custom resource (%s): (%s)", dummysite.Name, err),
 				})
@@ -189,7 +196,7 @@ func (r *DummySiteReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 
 			// Update the status
 			meta.SetStatusCondition(&dummysite.Status.Conditions, metav1.Condition{
-				Type:   typeAvailableDummysite,
+				Type:   typeDegradedDummysite,
 				Status: metav1.ConditionFalse, Reason: "resizing",
 				Message: fmt.Sprintf("Failed to update the size for the custom resource (%s): (%s)", dummysite.Name, err),
 			})
@@ -258,7 +265,7 @@ func (r *DummySiteReconciler) deploymentForDummysite(
 					Containers: []corev1.Container{{
 						Image:           image,
 						Name:            "dummysite",
-						ImagePullPolicy: corev1.PullIfNotPresent,
+						ImagePullPolicy: corev1.PullAlways,
 						SecurityContext: &corev1.SecurityContext{
 							RunAsNonRoot:             ptr.To(true),
 							RunAsUser:                ptr.To(int64(1001)),
@@ -269,6 +276,13 @@ func (r *DummySiteReconciler) deploymentForDummysite(
 								},
 							},
 						},
+						Env: []corev1.EnvVar{{
+							Name:  "WEBSITE_URL",
+							Value: dummysite.Spec.WebsiteUrl,
+						}, {
+							Name:  "PORT",
+							Value: "42069",
+						}},
 						Ports: []corev1.ContainerPort{{
 							ContainerPort: 42069,
 							Name:          "dummysite",
@@ -295,8 +309,7 @@ func (r *DummySiteReconciler) serviceForDummysite(
 		Spec: corev1.ServiceSpec{
 			Type: corev1.ServiceTypeNodePort,
 			Selector: map[string]string{
-				"app.kubernetes.io/name":     "dummysite",
-				"app.kubernetes.io/instance": dummysite.Name,
+				"app.kubernetes.io/name": "dummysite",
 			},
 			Ports: []corev1.ServicePort{{
 				Name:       "http",

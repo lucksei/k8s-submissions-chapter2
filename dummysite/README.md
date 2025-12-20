@@ -45,7 +45,7 @@ type DummySiteSpec struct {
 ...
 ```
 
-Then run `make manifests`, to test it out run `make run`
+Then run `make` & `make manifests`. To test it out run `make run`
 
 Now we write the reconciliation process logic where we create a deployment and a service for the DummySite resource and then apply it to the cluster. This is implemented inside the `internal/controller/dummysite_controller.go` file. By default it comes empty with the following boilerplate code:
 
