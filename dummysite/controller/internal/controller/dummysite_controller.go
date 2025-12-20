@@ -273,7 +273,6 @@ func (r *DummySiteReconciler) deploymentForDummysite(
 							ContainerPort: 42069,
 							Name:          "dummysite",
 						}},
-						Command: []string{"dummysite"},
 					}},
 				},
 			},
