@@ -91,6 +91,7 @@ func (r *DummySiteReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 			Reason:  "Reconciling",
 			Message: "Starting reconciliation",
 		})
+
 		if err = r.Status().Update(ctx, dummysite); err != nil {
 			log.Error(err, "Failed to update DummySite status")
 			return ctrl.Result{}, err
@@ -102,7 +103,7 @@ func (r *DummySiteReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 	}
 
 	// Also set the WebsiteUrl, Port and Replicas for the status
-	dummysite.Status.WebsiteUrl = fmt.Sprintf("%s", dummysite.Spec.WebsiteUrl)
+	dummysite.Status.WebsiteUrl = dummysite.Spec.WebsiteUrl
 	dummysite.Status.Port = *dummysite.Spec.Port
 	dummysite.Status.Replicas = *dummysite.Spec.Replicas
 
@@ -212,6 +213,30 @@ func (r *DummySiteReconciler) Reconcile(ctx context.Context, req ctrl.Request) (
 		// Now that we updated the status we want to requeue the reconciliation so that we can ensure that
 		// we have at least the state of the resource before update.
 		return ctrl.Result{RequeueAfter: 10 * time.Second}, nil
+	}
+
+	// Ensure the deployment env var WEBSITE_URL is the same as defined in the spec
+	if foundDeployment.Spec.Template.Spec.Containers[0].Env[0].Value != dummysite.Spec.WebsiteUrl {
+		foundDeployment.Spec.Template.Spec.Containers[0].Env[0].Value = dummysite.Spec.WebsiteUrl
+		if err := r.Update(ctx, foundDeployment); err != nil {
+			log.Error(err, "Failed to update Deployment", "Deployment.Namespace", foundDeployment.Namespace, "Deployment.Name", foundDeployment.Name)
+
+			// Requeue the reconciliation so that we can ensure that
+			// we have at least the state of the resource before update.
+			return ctrl.Result{RequeueAfter: 10 * time.Second}, nil
+		}
+	}
+
+	// Ensture the deployment env var PORT is the same as defined in the spec
+	if foundService.Spec.Ports[0].Port != *dummysite.Spec.Port {
+		foundService.Spec.Ports[0].Port = *dummysite.Spec.Port
+		if err := r.Update(ctx, foundService); err != nil {
+			log.Error(err, "Failed to update Service", "Service.Namespace", foundService.Namespace, "Service.Name", foundService.Name)
+
+			// Requeue the reconciliation so that we can ensure that
+			// we have at least the state of the resource before update.
+			return ctrl.Result{RequeueAfter: 1 * time.Second}, nil
+		}
 	}
 
 	// The following implementation will update the status

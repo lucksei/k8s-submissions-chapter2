@@ -4,5 +4,5 @@ metadata:
   name: crackmilf-dummysite
 spec:
   website_url: https://crackmilf.com/home
-  replicas: 2
-  port: 85
+  replicas: 1
+  port: 80
