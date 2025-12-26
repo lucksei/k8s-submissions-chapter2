@@ -37,6 +37,7 @@ type Config struct {
 	Port                int
 	LogFilePath         string
 	PingPongUrl         string
+	GreetingsUrl        string
 	InformationFilePath string
 	Message             string
 }
@@ -45,6 +46,7 @@ var config = Config{
 	Port:                getEnvVarInt("PORT", 3000),
 	LogFilePath:         getEnvVar("LOG_FILE_PATH", "./data/pod.log"),
 	PingPongUrl:         getEnvVar("PINGPONG_URL", "http://pingpong-svc:80/pings"),
+	GreetingsUrl:        getEnvVar("GREETINGS_URL", "http://greeter-svc:3000"),
 	InformationFilePath: getEnvVar("INFORMATION_FILE_PATH", "./data/information.txt"),
 	Message:             getEnvVar("MESSAGE", ""),
 }
@@ -128,6 +130,20 @@ func getPingPongCount(url string) (int, error) {
 	return p.Pings, nil
 }
 
+func getGreetingsMessage(url string) (string, error) {
+	res, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+	defer res.Body.Close()
+	bodyBytes, err := io.ReadAll(res.Body)
+	if err != nil {
+		return "", err
+	}
+
+	return string(bodyBytes), nil
+}
+
 func main() {
 	var message = config.Message
 
@@ -170,8 +186,17 @@ func main() {
 			return
 		}
 
+		// Read greetings message
+		greetingsMessage, err := getGreetingsMessage(config.GreetingsUrl)
+		if err != nil {
+			fmt.Printf("Error getting greetings message: %v\n", err)
+			res.WriteHeader(http.StatusInternalServerError)
+			res.Write([]byte("Error getting greetings message"))
+			return
+		}
+
 		// Write response
-		res.Write([]byte(fmt.Sprintf("file content: %s\nenv variable: MESSAGE=%s\n%s\nPing / Pongs: %d\n", information, message, lastLogLine, pingPongCount)))
+		res.Write([]byte(fmt.Sprintf("file content: %s\nenv variable: MESSAGE=%s\n%s\nPing / Pongs: %d\ngreetings: %s\n", information, message, lastLogLine, pingPongCount, greetingsMessage)))
 
 		// Log to console
 		fmt.Printf("%s: GET /status\n", time.Now().Format(time.RFC3339))

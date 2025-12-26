@@ -1807,3 +1807,34 @@ To confirm that roughly 10% of the of the traffic from 100 requests goes to revi
 ```sh
 kubectl exec deploy/curl -- sh -c "for i in \$(seq 1 100); do curl -s http://productpage:9080/productpage | grep reviews-v.-; done"
 ```
+
+### 5.3.
+
+Created a simple app "greeter" that responds with a HTTP GET request and shows a specific version as a message. Also created manifests and modified the kustomization file.
+
+Cheatsheet for creating a local (k3d) cluster
+
+```sh
+k3d cluster create my-cluster\
+  --port 8080:80@loadbalancer \
+  --port 8443:443@loadbalancer \
+  --k3s-arg "--disable=traefik@server:*" \
+  --agents-memory 4G \
+  --servers-memory 4G \
+  --agents 2
+```
+
+Install the Gateway API from kubernetes-sigs and the NGINX Gateway Fabric
+
+```sh
+kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml
+helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric --create-namespace -n nginx-gateway --wait
+```
+
+Installing Argo Rollouts (for the ping-pong app deployment)
+
+```sh
+kubectl create namespace argo-rollouts
+kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+```
+

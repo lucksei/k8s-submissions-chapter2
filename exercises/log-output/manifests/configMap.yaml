@@ -10,4 +10,5 @@ data:
   PORT: '3000'
   LOG_FILE_PATH: './data/pod.log'
   PINGPONG_URL: 'http://pingpong-svc:80/pings'
+  GREETINGS_URL: 'http://greeter-svc:3000' 
   INFORMATION_FILE_PATH: './data/information.txt'
