@@ -1,23 +1,63 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  name: greeter-v1
   labels:
     app: greeter
-  name: greeter
+    version: v1
   namespace: exercises
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: greeter
+      version: v1
   strategy: {}
   template:
     metadata:
       labels:
         app: greeter
+        version: v1
     spec:
       containers:
-        - image: lucksei/greeter:latest
+        - image: lucksei/greeter:v1
+          imagePullPolicy: Always
+          name: greeter
+          ports:
+            - containerPort: 3000 
+              protocol: TCP
+          resources:
+            limits:
+              memory: "64Mi"
+              cpu: "50m"
+            requests:
+              memory: "32Mi"
+              cpu: "25m"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: greeter-v2
+  labels:
+    app: greeter
+    version: v2
+  namespace: exercises
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: greeter
+      version: v2
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: greeter
+        version: v2
+    spec:
+      containers:
+        - image: lucksei/greeter:v2
           imagePullPolicy: Always
           name: greeter
           ports:

@@ -1838,3 +1838,9 @@ kubectl create namespace argo-rollouts
 kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
 ```
 
+Apply the exercises resources using kustomize
+
+```sh
+kubectl create namespace exercises
+kubectl apply -k ./exercises
+```

@@ -11,5 +11,6 @@ go run ./cmd
 To build and push the image
 
 ```sh
-docker build -t lucksei/greeter . && docker push lucksei/greeter:latest
+docker build -t lucksei/greeter:v1 . && docker push lucksei/greeter:v1
+docker build -t lucksei/greeter:v2 . && docker push lucksei/greeter:v2
 ```
