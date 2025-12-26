@@ -55,6 +55,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [4.10. The project, the grande finale](https://github.com/lucksei/k8s-submissions-chapter2/tree/4.10/project)
 - Chapter 6: Under the hood
   - [5.1. DIY CRD & Controller](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.1/dummysite)
+  - [5.2. Getting started with Istio service mesh](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.2)
 
 ## Exercise notes
 
@@ -1542,3 +1543,267 @@ Added a PAT token that allows me to push changes to the kustomization.yaml files
 Example for in-cluster-client-configuration for the 'Go Dummy-Site Controller' [here](https://github.com/kubernetes/client-go/tree/master/examples/in-cluster-client-configuration)
 
 Details on this exercise on the dummysite's README.md file [here](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.1/dummysite)
+
+### 5.2. Getting started with Istio service mesh
+
+> Exercise 5.2 contains no code, and all annotations from this section are pulled from istio.io docs. I just copied the steps/commands and pasted them here as I configured istio on my cluster.
+
+Install IstioCLI, Getting started guide [here](https://istio.io/latest/docs/ambient/getting-started/)
+
+```sh
+curl -L https://istio.io/downloadIstio | sh -
+sudo mv ~/istio-1.28.2/bin/istioctl /usr/local/bin/
+# cd istio-1.28.2
+# export PATH=$PATH:$PWD/bin
+```
+
+> Full docs on k3d cluster installation [here](https://istio.io/latest/docs/ambient/install/platform-prerequisites/#k3d)
+
+When using _k3d_ as the cluster manager. Create a cluster with Traefik disabled, for example we can use the same command as the nginx fabric gateway
+
+```sh
+k3d cluster create my-cluster\
+  --port 9080:80@loadbalancer \
+  --port 9443:443@loadbalancer \
+  --k3s-arg "--disable=traefik@server:*" \
+  --agents-memory 4G \
+  --servers-memory 4G \
+  --agents 2
+```
+
+Set `global.platform=k3d`
+
+```sh
+helm install istio-cni istio/cni -n istio-system --set profile=ambient --set global.platform=k3d --wait
+```
+
+Or with istioctl, then press 'y' when prompted for ambient mode.
+
+```sh
+istioctl install --set profile=ambient --set values.global.platform=k3d
+```
+
+Following the [Deploy Example App](https://istio.io/latest/docs/ambient/getting-started/deploy-sample-app/) guide
+
+1. **Deploy Sample Application**: https://istio.io/latest/docs/ambient/getting-started/deploy-sample-app/
+1. **Secure and Visualize**: https://istio.io/latest/docs/ambient/getting-started/secure-and-visualize/
+1. **Enforce Authentication Policies**: https://istio.io/latest/docs/ambient/getting-started/enforce-auth-policies/
+1. **Manage Traffic**: https://istio.io/latest/docs/ambient/getting-started/manage-traffic/
+1. **Cleanup**: https://istio.io/latest/docs/ambient/getting-started/cleanup/
+
+#### Part 1: Deploy Sample Application
+
+The example `bookinfo` application can be found on GitHub [here](https://github.com/istio/istio/tree/release-1.28/samples/bookinfo)
+
+Deploy the bookinfo app
+
+```sh
+# kubectl apply -f samples/bookinfo/platform/kube/bookinfo.yaml
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.28/samples/bookinfo/platform/kube/bookinfo.yaml
+# kubectl apply -f samples/bookinfo/platform/kube/bookinfo-versions.yaml
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.28/samples/bookinfo/platform/kube/bookinfo-versions.yaml
+```
+
+Then verify that the app is running with `kubectl get pods`
+
+Install the Gateway API from [kubernetes-sigs](https://gateway-api.sigs.k8s.io/guides/getting-started/#installing-a-gateway-controller) and the bookinfo-gateway from this example
+
+```sh
+kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml
+# kubectl apply -f samples/bookinfo/gateway-api/bookinfo-gateway.yaml
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.28/samples/bookinfo/gateway-api/bookinfo-gateway.yaml
+```
+
+> "By default, Istio creates a LoadBalancer service for a gateway. As you will access this gateway by a tunnel, you don’t need a load balancer. Change the service type to ClusterIP by annotating the gateway:"
+
+```sh
+kubectl annotate gateway bookinfo-gateway networking.istio.io/service-type=ClusterIP --namespace=default
+```
+
+To check the cluster status
+
+```sh
+kubectl get gateway
+```
+
+To access the application you can port forward the gateway service
+
+```sh
+kubectl port-forward svc/bookinfo-gateway-istio 8080:80
+```
+
+Then navigate to http://localhost:8080/productpage
+
+#### Part 2: Secure and Visualize
+
+> Adding applications to an ambient mesh is as simple as labeling the namespace where the application resides. By adding the applications to the mesh, you automatically secure the communication between them and Istio starts gathering TCP telemetry. And no, you don’t need to restart or redeploy the applications!
+
+```sh
+kubectl label namespace default istio.io/dataplane-mode=ambient
+```
+
+You can visualize the application using Kiali and Prometheus
+
+```sh
+# kubectl apply -f samples/addons/prometheus.yaml
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.28/samples/addons/prometheus.yaml
+# kubectl apply -f samples/addons/kiali.yaml
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.28/samples/addons/kiali.yaml
+```
+
+To access the Kiali dashboard use
+
+```sh
+istioctl dashboard kiali
+```
+
+Sending some traffic with curl
+
+```sh
+for i in $(seq 1 100); do curl -sSI -o /dev/null http://localhost:8080/productpage; done
+```
+
+#### Part 3: Enforce Authentication Policies
+
+Creating an authorization policy that restricts which services can communicate with the 'productpage' service. It allows calls only from the service account `cluster.local/ns/default/sa/bookinfo-gateway-istio`
+
+```sh
+kubectl apply -f - <<EOF
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: productpage-ztunnel
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: productpage
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        principals:
+        - cluster.local/ns/default/sa/bookinfo-gateway-istio
+EOF
+```
+
+Opening the Bookinfo app in your browser allows you to access the productpage service but if you try to access the 'productpage' service from a different service account you should see an error.
+
+Accessing from a different SA
+
+```sh
+# kubectl apply -f samples/curl/curl.yaml
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.28/samples/curl/curl.yaml
+```
+
+Since the curl pod is using a different service account, it will not have access the productpage service:
+
+```sh
+kubectl exec deploy/curl -- curl -s "http://productpage:9080/productpage"
+```
+
+Enforcing layer 7 authorization policy requires the **waypoint proxy**. This proxy will handle all Layer 7 traffic entering the namespace.
+
+```sh
+istioctl waypoint apply --enroll-namespace --wait
+```
+
+Adding a L7 authorization policy will explicitly allow the curl service to send GET requests to the productpage service, but perform no other operations:
+
+```sh
+kubectl apply -f - <<EOF
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: productpage-waypoint
+  namespace: default
+spec:
+  targetRefs:
+  - kind: Service
+    group: ""
+    name: productpage
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        principals:
+        - cluster.local/ns/default/sa/curl
+    to:
+    - operation:
+        methods: ["GET"]
+EOF
+```
+
+Updating our L4 policy to allow connections only from the gateway.
+
+```sh
+kubectl apply -f - <<EOF
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: productpage-ztunnel
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: productpage
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        principals:
+        - cluster.local/ns/default/sa/bookinfo-gateway-istio
+        - cluster.local/ns/default/sa/waypoint
+EOF
+```
+
+Confirm the new waypoint proxy is enforcing the updated authorization policy:
+
+```sh
+# This fails with an RBAC error because you're not using a GET operation
+kubectl exec deploy/curl -- curl -s "http://productpage:9080/productpage" -X DELETE
+# RBAC: access denied
+
+# This fails with an RBAC error because the identity of the reviews-v1 service is not allowed
+kubectl exec deploy/reviews-v1 -- curl -s http://productpage:9080/productpage
+# RBAC: access denied
+
+# This works as you're explicitly allowing GET requests from the curl pod
+kubectl exec deploy/curl -- curl -s http://productpage:9080/productpage | grep -o "<title>.*</title>"
+# <title>Simple Bookstore App</title>
+```
+
+#### Part 4: Manage traffic
+
+The Bookinfo application has three versions of the `reviews` service. You can split traffic between these versions to test out new features or perform A/B testing.
+
+Let’s configure traffic routing to send 90% of requests to reviews v1 and 10% to reviews v2:
+
+```sh
+kubectl apply -f - <<EOF
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: reviews
+spec:
+  parentRefs:
+  - group: ""
+    kind: Service
+    name: reviews
+    port: 9080
+  rules:
+  - backendRefs:
+    - name: reviews-v1
+      port: 9080
+      weight: 90
+    - name: reviews-v2
+      port: 9080
+      weight: 10
+EOF
+```
+
+To confirm that roughly 10% of the of the traffic from 100 requests goes to reviews-v2, you can run the following command:
+
+```sh
+kubectl exec deploy/curl -- sh -c "for i in \$(seq 1 100); do curl -s http://productpage:9080/productpage | grep reviews-v.-; done"
+```
