@@ -56,6 +56,7 @@ The repository contains **all chapters** from the course, not just the ones from
 - Chapter 6: Under the hood
   - [5.1. DIY CRD & Controller](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.1/dummysite)
   - [5.2. Getting started with Istio service mesh](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.2)
+  - [5.3. Log app, the Service Mesh Edition](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.3/exercises)
 
 ## Exercise notes
 
