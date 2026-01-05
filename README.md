@@ -1808,7 +1808,7 @@ To confirm that roughly 10% of the of the traffic from 100 requests goes to revi
 kubectl exec deploy/curl -- sh -c "for i in \$(seq 1 100); do curl -s http://productpage:9080/productpage | grep reviews-v.-; done"
 ```
 
-### 5.3.
+### 5.3. Log app, the Service Mesh Edition
 
 Created a simple app "greeter" that responds with a HTTP GET request and shows a specific version as a message. Also created manifests and modified the kustomization file.
 
@@ -1821,22 +1821,37 @@ k3d cluster create my-cluster\
   --k3s-arg "--disable=traefik@server:*" \
   --agents-memory 4G \
   --servers-memory 4G \
-  --agents 2
+  --agents 1
 ```
 
-Install the Gateway API from kubernetes-sigs and the NGINX Gateway Fabric
+Install the Gateway API from kubernetes-sigs
 
 ```sh
 kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml
-helm install ngf oci://ghcr.io/nginx/charts/nginx-gateway-fabric --create-namespace -n nginx-gateway --wait
 ```
 
-Installing Argo Rollouts (for the ping-pong app deployment)
+Installing Istio on the k3d cluster
+
+1. Option 1: Install with Helm
 
 ```sh
-kubectl create namespace argo-rollouts
-kubectl apply -n argo-rollouts -f https://github.com/argoproj/argo-rollouts/releases/latest/download/install.yaml
+helm install istio-cni istio/cni -n istio-system --set profile=ambient --set global.platform=k3d --wait
 ```
+
+2. Option 2: Install with istioctl, then press 'y' when prompted for ambient mode.
+
+```sh
+istioctl install --set profile=ambient --set values.global.platform=k3d
+```
+
+If installed correctly it should appear a new namespace `istio-system`
+
+Created new resources for the greeter app and istio service mesh to split the traffic between greeter v1 and greeter v2:
+
+- `./greeter/manifests/deployment.yaml` With two deployments, `greeter-v1` and `greeter-v2`.
+- `./greeter/manifests/service.yaml` with one service `greeter-svc`.
+- `./greeter/manifests/versions.yaml` with the two service versions `greeter-v1-svc` and `greeter-v2-svc`.
+- `./manifests/trafficHttpRoute.yaml` with a HTTPRoute that has the parent ref to the service `greeter-svc` and backend refs to split the traffic between the two deployments `greeter-v1` and `greeter-v2` with 75% and 25% respectively.
 
 Apply the exercises resources using kustomize
 
@@ -1844,3 +1859,39 @@ Apply the exercises resources using kustomize
 kubectl create namespace exercises
 kubectl apply -k ./exercises
 ```
+
+Entrypoints are:
+
+- http://localhost:8080/pingpong
+- http://localhost:8080/status
+
+The app can be accessed but traffic balancing will not work as expected yet.
+
+Enable Ambient Mesh for the current namespace
+
+```sh
+kubectl label namespace exercises istio.io/dataplane-mode=ambient
+```
+
+To do traffic balancing you need the waypoint proxy.
+
+```sh
+istioctl waypoint apply --enroll-namespace --wait
+```
+
+You can visualize the traffic by installing Kiali and Prometheus
+
+```sh
+# kubectl apply -f samples/addons/prometheus.yaml
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.28/samples/addons/prometheus.yaml
+# kubectl apply -f samples/addons/kiali.yaml
+kubectl apply -f https://raw.githubusercontent.com/istio/istio/release-1.28/samples/addons/kiali.yaml
+```
+
+To access the Kiali dashboard use
+
+```sh
+istioctl dashboard kiali
+```
+
+![Exercise 5.3](img/20260105-05-exercise_5_3.png)

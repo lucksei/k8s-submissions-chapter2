@@ -4,7 +4,8 @@ kind: Kustomization
 namespace: exercises
 resources:
 - ./manifests/gateway.yaml
-- ./pingpong/manifests/analysisTemplate.yaml
+- ./manifests/trafficHttpRoute.yaml
+# - ./manifests/gatewayNginx.yaml
 - ./pingpong/manifests/database.yaml
 - ./pingpong/manifests/deployment.yaml
 - ./pingpong/manifests/service.yaml
@@ -13,3 +14,4 @@ resources:
 - ./log-output/manifests/service.yaml
 - ./greeter/manifests/deployment.yaml
 - ./greeter/manifests/service.yaml
+- ./greeter/manifests/versions.yaml
