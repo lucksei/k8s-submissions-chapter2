@@ -15,3 +15,6 @@ resources:
 - ./greeter/manifests/deployment.yaml
 - ./greeter/manifests/service.yaml
 - ./greeter/manifests/versions.yaml
+- ./randomwiki/manifests/configMap.yaml
+- ./randomwiki/manifests/deployment.yaml
+- ./randomwiki/manifests/service.yaml

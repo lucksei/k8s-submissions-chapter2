@@ -55,46 +55,26 @@ spec:
         - name: log-output-svc
           port: 80
 
-# ---
-# apiVersion: gateway.networking.k8s.io/v1
-# kind: HTTPRoute
-# metadata:
-#   name: greeter-route
-#   namespace: exercises
-# spec:
-#   parentRefs:
-#     - group: ""
-#       kind: Service
-#       name: greeter-svc
-#       port: 3000
-#   rules:
-#     - backendRefs:
-#       - name: greeter-svc-v1
-#         port: 3000
-#         weight: 50
-#       - name: greeter-svc-v2
-#         port: 3000
-#         weight: 50
-
-
-# ---
-# apiVersion: gateway.networking.k8s.io/v1beta1
-# kind: HTTPRoute
-# metadata:
-#   name: greeter-route 
-#   namespace: exercises
-# spec:
-#   parentRefs:
-#     - name: exercises-gateway
-#   rules:
-#     - matches:
-#       - path:
-#           type: Exact
-#           value: /
-#       backendRefs:
-#         - name: greeter-v1-svc
-#           port: 3000
-#           weight: 75
-#         - name: greeter-v2-svc
-#           port: 3000
-#           weight: 25
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: randomwiki-route
+  namespace: exercises
+spec:
+  parentRefs:
+    - name: exercises-gateway
+  rules:
+    - matches:
+      - path:
+          type: PathPrefix
+          value: /randomwiki
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
+      backendRefs:
+        - name: randomwiki-svc
+          port: 80

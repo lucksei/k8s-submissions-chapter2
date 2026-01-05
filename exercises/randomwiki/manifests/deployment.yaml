@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: randomwiki
+  namespace: exercises
+  labels:
+    app: randomwiki
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: randomwiki
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: randomwiki
+    spec:
+      volumes:
+        - name: static-data
+          emptyDir: {}
+        - name: nginx-config
+          configMap:
+            name: randomwiki-configmap
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+        - name: sidecar-script
+          configMap:
+            name: randomwiki-configmap
+            items:
+              - key: sidecar.sh
+                path: sidecar.sh
+      containers:
+        - image: nginx:stable-alpine3.23
+          imagePullPolicy: IfNotPresent
+          name: randomwiki
+          resources: {}
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+              readOnly: true
+            - name: static-data
+              mountPath: /var/www/randomwiki/html
+          ports:
+            - containerPort: 80
+              protocol: TCP
+        - image: alpine/curl:latest
+          imagePullPolicy: IfNotPresent
+          name: refetch-sidecar
+          resources: {}
+          volumeMounts:
+            - name: static-data
+              mountPath: /var/www/randomwiki/html
+            - name: sidecar-script
+              mountPath: /sidecar.sh
+              subPath: sidecar.sh
+              readOnly: true
+          command: ["sh", "/sidecar.sh"]
+      initContainers:
+        - image: alpine/curl:latest
+          imagePullPolicy: IfNotPresent
+          name: init
+          resources: {}
+          volumeMounts:
+            - name: static-data
+              mountPath: /var/www/randomwiki/html
+          command: ["curl", "-L", "-o", "/var/www/randomwiki/html/index.html", "https://en.wikipedia.org/wiki/Special:Random"]

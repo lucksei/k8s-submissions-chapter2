@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: randomwiki-configmap
+  namespace: exercises
+data:
+  nginx.conf: |
+    events {
+      worker_connections   2000;
+      use epoll;
+    }
+
+    http {
+      server {
+        listen 80;
+
+        root /var/www/randomwiki/html;
+        index index.html index.htm index.nginx-debian.html;
+        # server_name _;
+
+        location / {
+          try_files $uri $uri/ =404;
+        }
+      }
+    }
+  sidecar.sh: |
+    #!/bin/sh
+    MIN_MINUTES=5
+    MAX_MINUTES=15
+    RANGE_SECONDS=$((MAX_MINUTES * 60 - MIN_MINUTES * 60))
+    while [ true ]; do
+      RAND_SLEEP=$(($RANDOM % RANGE_SECONDS + MIN_MINUTES * 60))
+      echo "Sleeping for $RAND_SLEEP seconds"
+      sleep $RAND_SLEEP
+      echo "Fetching random page"
+      curl -L -o /var/www/randomwiki/html/index.html https://en.wikipedia.org/wiki/Special:Random
+    done

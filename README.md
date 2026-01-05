@@ -57,6 +57,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [5.1. DIY CRD & Controller](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.1/dummysite)
   - [5.2. Getting started with Istio service mesh](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.2)
   - [5.3. Log app, the Service Mesh Edition](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.3/exercises)
+  - [5.4. Wikipedia with init and sidecar](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.4/exercises)
 
 ## Exercise notes
 
@@ -1896,3 +1897,36 @@ istioctl dashboard kiali
 ```
 
 ![Exercise 5.3](img/20260105-05-exercise_5_3.png)
+
+### 5.4. Wikipedia with init and sidecar
+
+Cheatsheet for creating a local (k3d) cluster
+
+```sh
+k3d cluster create my-cluster\
+  --port 8080:80@loadbalancer \
+  --port 8443:443@loadbalancer \
+  --k3s-arg "--disable=traefik@server:*" \
+  --agents-memory 4G \
+  --servers-memory 4G \
+  --agents 1
+```
+
+Install the Gateway API from kubernetes-sigs
+
+```sh
+kubectl apply --server-side -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.0/standard-install.yaml
+```
+
+Keeping istio from the previous exercise as the gateway
+
+```sh
+istioctl install --set profile=ambient --set values.global.platform=k3d
+```
+
+Apply the deployment
+
+```sh
+create namespace exercises
+kubectl apply -k ./exercises
+```

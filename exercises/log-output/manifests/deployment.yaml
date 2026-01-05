@@ -21,7 +21,7 @@ spec:
           emptyDir: {}
         - name: information
           configMap:
-            name: log-output-cm
+            name: log-output-configmap
             items:
               - key: information.txt
                 path: information.txt
@@ -57,6 +57,6 @@ spec:
               port: 3000
           envFrom:
             - configMapRef:
-                name: log-output-cm
+                name: log-output-configmap
           resources: {}
 status: {}
