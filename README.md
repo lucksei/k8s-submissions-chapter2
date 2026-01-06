@@ -1930,3 +1930,14 @@ Apply the deployment
 create namespace exercises
 kubectl apply -k ./exercises
 ```
+
+### 5.5. Platform comparison
+
+Decided to compare OpenShift and Rancher. By coinflip I went with Rancher.
+
+- Cloud-native: Both offer multiple cloud native solutions. OpenShift can be hosted on AWS, Azure, GCP, IBM. Rancher can be hosted on AWS, Azure, GCP.
+- Local service: Both can be hosted locally, personally Rancher wins here for testing purposes only as K3s is a very lightweight solution, I have no experience with OpenShift.
+- Open source: Both are fully open source but OpenShift offers vendor specific tools that, while it agilizes the experience, it might lock you in to a specific vendor instead of being able to customize the cluster to your specific needs.
+- Security: Both are solid, they support RBAC and Pod Security Policies and make use of CNCF-certified projects like Istio for service meshes.
+- Tooling: Both deliver a rich set of services to manage the cluster, application, service mesh and development, as well as open source solutions for monitoring and logging.
+- Support: Both are actively maintained and offer 24/7 support.
