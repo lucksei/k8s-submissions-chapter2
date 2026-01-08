@@ -58,6 +58,8 @@ The repository contains **all chapters** from the course, not just the ones from
   - [5.2. Getting started with Istio service mesh](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.2)
   - [5.3. Log app, the Service Mesh Edition](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.3/exercises)
   - [5.4. Wikipedia with init and sidecar](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.4/exercises)
+  - [5.5. Platform comparison](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.5)
+  - [5.6. Trying serverless](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.6)
 
 ## Exercise notes
 
