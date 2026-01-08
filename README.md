@@ -1941,3 +1941,217 @@ Decided to compare OpenShift and Rancher. By coinflip I went with Rancher.
 - Security: Both are solid, they support RBAC and Pod Security Policies and make use of CNCF-certified projects like Istio for service meshes.
 - Tooling: Both deliver a rich set of services to manage the cluster, application, service mesh and development, as well as open source solutions for monitoring and logging.
 - Support: Both are actively maintained and offer 24/7 support.
+
+Conclusion: Both are exelent choices for using Kubernetes and have a professional grade working solution in a very short ammount of time.
+
+### 5.6. Trying serverless
+
+Start a new cluster
+
+```sh
+k3d cluster create my-cluster\
+  --port 8080:80@loadbalancer \
+  --port 8443:443@loadbalancer \
+  --k3s-arg "--disable=traefik@server:*" \
+  --agents-memory 6G \
+  --servers-memory 6G \
+  --agents 2
+```
+
+> Install Serving with YAML [link](https://knative.dev/docs/install/yaml-install/serving/install-serving-with-yaml/)
+
+1. First install Knative CLI tools 'kn' [link](https://knative.dev/docs/client/install-kn/)
+
+Then install the required custom resources
+
+```sh
+kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.20.1/serving-crds.yaml
+```
+
+Install the core components of Knative Serving
+
+```sh
+kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.20.1/serving-core.yaml
+```
+
+Installing the networking layer (i picked Knative Kourier as it's the default one)
+
+```sh
+kubectl apply -f https://github.com/knative-extensions/net-kourier/releases/download/knative-v1.20.0/kourier.yaml
+```
+
+Configure Knative Serving to use Kourier by default
+
+```sh
+kubectl patch configmap/config-network \
+  --namespace knative-serving \
+  --type merge \
+  --patch '{"data":{"ingress-class":"kourier.ingress.networking.knative.dev"}}'
+```
+
+Fetch the External IP address or CNAME and save this to use it in the following section when configuring the DNS
+
+```sh
+kubectl --namespace kourier-system get service kourier
+```
+
+#### The bug
+
+To monitor Knative components run `kubectl get pods -n knative-serving`.
+
+The logs show errors starting
+
+```
+NAME                                    READY   STATUS             RESTARTS        AGE
+activator-599666c664-64fkg              0/1     CrashLoopBackOff   7 (87s ago)     20m
+autoscaler-6d4bd8b6d7-7577x             0/1     CrashLoopBackOff   9 (7s ago)      20m
+controller-6fdb4996cd-kkbsw             0/1     CrashLoopBackOff   8 (3m37s ago)   20m
+net-kourier-controller-5dc864c5-wlz44   0/1     CrashLoopBackOff   8 (3m51s ago)   19m
+webhook-745dcd59ff-7ktk9                0/1     CrashLoopBackOff   8 (3m41s ago)   20m
+```
+
+When inspecting the logs, for example
+
+```sh
+kubectl logs -f -n knative-serving controller-6fdb4996cd-kkbsw
+```
+
+```
+2026/01/08 02:20:57 Registering 6 clients
+2026/01/08 02:20:57 Registering 6 informer factories
+2026/01/08 02:20:57 Registering 15 informers
+2026/01/08 02:20:57 Registering 9 controllers
+{"severity":"EMERGENCY","timestamp":"2026-01-08T02:20:57.213817374Z","logger":"controller","caller":"sharedmain/main.go:463","message":"Version check failed","commit":"00d08e7","knative.dev/pod":"controller-6fdb4996cd-kkbsw","error":"kubernetes version \"1.31.5+k3s1\" is not compatible, need at least \"1.32.0-0\" (this can be overridden with the env var \"KUBERNETES_MIN_VERSION\")","stacktrace":"knative.dev/pkg/injection/sharedmain.CheckK8sClientMinimumVersionOrDie\n\tknative.dev/pkg@v0.0.0-20251224022520-6fe064596819/injection/sharedmain/main.go:463\nknative.dev/pkg/injection/sharedmain.MainWithConfig\n\tknative.dev/pkg@v0.0.0-20251224022520-6fe064596819/injection/sharedmain/main.go:271\nmain.main\n\tknative.dev/serving/cmd/controller/main.go:92\nruntime.main\n\truntime/proc.go:285"}
+```
+
+We can see that the k3s version is too old for knative (1.31.5) and requires at least 1.32.0. One possible fix is to use a pre-release version of k3d supporting a newer version of k3s. Link to releases [here](https://github.com/k3d-io/k3d/releases)
+
+```sh
+wget -q -O - https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | TAG=v5.9.0-rc.0 bash
+```
+
+Run `k3d version` and ensure k3s version is greater than 1.32.0
+
+```
+k3d version v5.9.0-rc.0
+k3s version v1.33.4-k3s1 (default)
+```
+
+And re-run the previous commands
+
+After that run `kubectl version` just to be sure
+
+```
+Client Version: v1.34.2
+Kustomize Version: v5.7.1
+Server Version: v1.33.4+k3s1
+```
+
+Finally for the DNS. Knative provides a Kubernetes Job called default-domain that configures Knative Serving to use sslip.io as the default DNS suffix.
+
+```sh
+kubectl apply -f https://github.com/knative/serving/releases/download/knative-v1.20.1/serving-default-domain.yaml
+```
+
+#### Example 1: Deploying a Knative Service
+
+Tutorial [here](https://knative.dev/docs/getting-started/first-service/)
+
+With kn CLI
+
+```sh
+kn service create hello \
+--image ghcr.io/knative/helloworld-go:latest \
+--port 8080 \
+--env TARGET=World
+```
+
+With `hello.yaml` YAML
+
+```yaml
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: hello
+spec:
+  template:
+    spec:
+      containers:
+        - image: ghcr.io/knative/helloworld-go:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: TARGET
+              value: "World"
+```
+
+```sh
+kubectl apply -f hello.yaml
+```
+
+Result
+
+```sh
+curl -H "Host: hello.knative-serving.172.18.0.3.sslip.io" http://localhost:8080
+Hello World!
+```
+
+To test locally, one way is to add an entry to `/etc/hosts`
+
+```sh
+sudo sh -c 'echo "127.0.0.1 hello.knative-serving.172.18.0.3.sslip.io" >> /etc/hosts'
+```
+
+#### Example 2: Autoscaling
+
+Tutorial [here](https://knative.dev/docs/getting-started/first-autoscale/)
+
+```sh
+echo "Accessing URL $(kn service describe hello -o url)"
+curl "$(kn service describe hello -o url):8080"
+```
+
+Check the autoscaling
+
+```sh
+kubectl get pod -l serving.knative.dev/service=hello -w
+```
+
+#### Example 3: Traffic Splitting
+
+Tutorial [here](https://knative.dev/docs/getting-started/first-traffic-split/)
+
+Update env variable to say "Hello Knative!"
+
+```sh
+kn service update hello \
+--env TARGET=Knative
+```
+
+This prints valuable info about the service revision
+
+```
+Service 'hello' updated to latest revision 'hello-00002' is available at URL:
+http://hello.knative-serving.172.18.0.3.sslip.io
+```
+
+See list of revisions
+
+```sh
+kn revisions list
+kubectl get revisions
+```
+
+```
+NAME          SERVICE   TRAFFIC   TAGS   GENERATION   AGE    CONDITIONS   READY   REASON
+hello-00002   hello     100%             2            4m9s   3 OK / 4     True
+hello-00001   hello                      1            61m    3 OK / 4     True
+```
+
+By default kn sends all traffic to the latest revision but you can change the behavior with kn
+
+```sh
+kn service update hello \
+--traffic hello-00001=50 \
+--traffic @latest=50
+```
