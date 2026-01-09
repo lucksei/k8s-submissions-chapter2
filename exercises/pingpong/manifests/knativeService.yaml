@@ -1,24 +1,13 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: serving.knative.dev/v1
+kind: Service
 metadata:
-  labels:
-    app: pingpong
-  name: pingpong-deployment
+  name: pingpong
   namespace: exercises
 spec:
-  replicas: 2
-  selector:
-    matchLabels:
-      app: pingpong
-  strategy: {}
   template:
-    metadata:
-      labels:
-        app: pingpong
     spec:
       containers:
-        - name: pingpong
-          image: lucksei/pingpong:latest
+        - image: lucksei/pingpong:latest
           ports:
             - containerPort: 3000
               protocol: TCP
@@ -44,9 +33,7 @@ spec:
               cpu: 50m
               memory: 64Mi
           env:
-            - name: PORT
-              value: '3000'
+            # - name: PORT
+            #   value: '3000'
             - name: DATABASE_URI
               value: postgres://pingpong:pingpong@pingpong-postgres-svc:5432/pingpong
-              # NOTE: The above line is commented out to simulate a misconfiguration for the exercise.
-              # value: postgres://pingpong:wrongpassword@pingpong-postgres-svc:5432/pingpong

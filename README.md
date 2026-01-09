@@ -60,6 +60,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [5.4. Wikipedia with init and sidecar](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.4/exercises)
   - [5.5. Platform comparison](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.5)
   - [5.6. Trying serverless](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.6)
+  - [5.7. Deploy to serverless](https://github.com/lucksei/k8s)
 
 ## Exercise notes
 
@@ -2156,4 +2157,26 @@ By default kn sends all traffic to the latest revision but you can change the be
 kn service update hello \
 --traffic hello-00001=50 \
 --traffic @latest=50
+```
+
+### 5.7. Deploy to serverless
+
+App code was already adaptable for serverless, just updated the manifests
+
+```sh
+kubectl apply -f ./exercises/pingpong/manifests
+# Or the entire exercises deployment (requires the Gateway API to be installed)
+kubectl apply -k ./exercises
+```
+
+get the service
+
+```sh
+kubectl get ksvc
+```
+
+Small hack to make the service accessible locally
+
+```sh
+sudo sh -c 'echo "127.0.0.1 pingpong.exercises.172.18.0.3.sslip.io" >> /etc/hosts'
 ```

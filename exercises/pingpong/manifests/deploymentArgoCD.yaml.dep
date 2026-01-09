@@ -1,16 +1,27 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
 metadata:
   labels:
     app: pingpong
   name: pingpong-deployment
   namespace: exercises
 spec:
-  replicas: 2
+  replicas: 4
   selector:
     matchLabels:
       app: pingpong
-  strategy: {}
+  strategy: 
+    canary:
+      steps:
+        - setWeight: 25
+        - pause:
+            duration: 30s
+        - analysis:
+            templates:
+              - templateName: cpu-usage
+        - setWeight: 50
+        - pause:
+            duration: 30s
   template:
     metadata:
       labels:
@@ -36,13 +47,7 @@ spec:
             httpGet:
               path: /healthz
               port: 3000
-          resources:
-            limits:
-              cpu: 100m
-              memory: 128Mi 
-            requests:
-              cpu: 50m
-              memory: 64Mi
+          resources: {}
           env:
             - name: PORT
               value: '3000'

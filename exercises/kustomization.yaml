@@ -7,8 +7,9 @@ resources:
 - ./manifests/trafficHttpRoute.yaml
 # - ./manifests/gatewayNginx.yaml
 - ./pingpong/manifests/database.yaml
-- ./pingpong/manifests/deployment.yaml
+# - ./pingpong/manifests/deployment.yaml
 - ./pingpong/manifests/service.yaml
+- ./pingpong/manifests/knativeService.yaml
 - ./log-output/manifests/configMap.yaml
 - ./log-output/manifests/deployment.yaml
 - ./log-output/manifests/service.yaml
