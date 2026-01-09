@@ -60,7 +60,7 @@ The repository contains **all chapters** from the course, not just the ones from
   - [5.4. Wikipedia with init and sidecar](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.4/exercises)
   - [5.5. Platform comparison](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.5)
   - [5.6. Trying serverless](https://github.com/lucksei/k8s-submissions-chapter2/tree/5.6)
-  - [5.7. Deploy to serverless](https://github.com/lucksei/k8s)
+  - [5.7. Deploy to serverless](https://github.com/lucksei/k8s/submissions-chapter2/tree/5.7/exercises/pingpong)
 
 ## Exercise notes
 
