@@ -2180,3 +2180,18 @@ Small hack to make the service accessible locally
 ```sh
 sudo sh -c 'echo "127.0.0.1 pingpong.exercises.172.18.0.3.sslip.io" >> /etc/hosts'
 ```
+
+### 5.8. Landscape
+
+In this course:
+Kubernetes (and indirectly Etcd, Flannel and Containerd): For the local cluster.
+HELM, Artifact HUB: For installing resources in my cluster.
+PostgreSQL, Redis: For app development.
+Argo, GitHub Actions: For CI.
+Google Container Registry, Google Cloud Build: For part 4 of course.
+NATS: Pub/Sub messaging
+Knative: Serverless
+Istio, Kiali: Service Mesh.
+
+Other:
+Docker Compose, ClickHouse, MariaDB, mongoDB, MySQL, GitLab, RabbitMQ, Ngrok, gRPC, Nginx, Ansible, VMware VSphere, Prometheus, Grafana, Logstash, OpenSearch, Zabbix
